@@ -25,7 +25,6 @@ function GameHandler(size, min_number, max_number, ops, tgt_min, tgt_max, tgt_st
     this.CGTarget = canGenerateTarget;
     this.Numbers = new Array(size);
     this.objNumbers = new Array(size);
-    this.currentSet = new Array();
     this.operations = ops.toString().split("");
     this.foundSol = false;
     this.bestSolution = new Array();
@@ -38,7 +37,7 @@ function GameHandler(size, min_number, max_number, ops, tgt_min, tgt_max, tgt_st
 function ObjNumber(n, s) {
     this.value = parseInt(n);
     this.computation = s;
-    this.first_result = -9999;
+    this.first_result = '';  // for hint purpose
 }
 
 function SolutionList() {
@@ -54,53 +53,71 @@ GameHandler.prototype.generateRandomNumbers = function (min, max, step) {
     return min + step * Math.floor(nsteps * Math.random());
 };
 
-//generate a new Numbers set and list all solutions if generate=true, else restart the current set.
-GameHandler.prototype.generateNumbers = function (regenerate) {
-    this.hintsGiven = 0;
-    if (regenerate) {
-        var dummy = [2, 10, 7, 10];
-        do {
-            this.target = this.generateRandomNumbers(this.min_target, this.max_target, this.step_target);
-            for (var i = 0; i < this.size; i++) {
-                do {
-                    this.Numbers[i] = this.generateRandomNumbers(this.min_number, this.max_number, 1);
+//generate a new Numbers set and list all solutions.
+GameHandler.prototype.generateNumbers = function () {
+    var trials_counter = 0;
+    var trials_counter2 = 0;
+    do {
+        trials_counter++;
+        this.target = this.generateRandomNumbers(this.min_target, this.max_target, this.step_target);
+        for (var i = 0; i < this.size; i++) {
+            trials_counter2 = 0;
+            do {
+                this.Numbers[i] = this.generateRandomNumbers(this.min_number, this.max_number, 1);
+                trials_counter2++;
+                if (trials_counter2 > 100) {
+                    //raise error
+                    var generateNumbersError=true;
+                    break;
                 }
-                while (!this.CGTarget && this.Numbers[i] === this.target);
-                //    this.Numbers[i]=dummy[i]; for debug purpose.
-                this.objNumbers[i] = new ObjNumber(this.Numbers[i], this.Numbers[i].toString());
             }
-            this.foundSol = false;
-            this.listOfSolutions = [];
-            this.bestSolution = [];
-            this.hintList = [];
-            var allSolutions = this.findSolution(this.objNumbers, this.target, this.mustUseAll);
+            while (!this.CGTarget && this.Numbers[i] === this.target);
+            this.objNumbers[i] = new ObjNumber(this.Numbers[i], this.Numbers[i].toString());
+        }
+        this.foundSol = false;
+        this.listOfSolutions = [];
+        this.bestSolution = [];
+        this.stringSolutions = [];
+        this.hintList = [];
+        var allSolutions = this.findSolution(this.objNumbers, this.target, this.mustUseAll);
 
-            if (allSolutions.lowerSol === this.target) {
-                this.foundSol = true;
-                this.bestSolution.push(this.target);
-                for (var i = 0; i < allSolutions.lowerSolList.length; i++) {
-                    this.listOfSolutions.push(allSolutions.lowerSolList[i]);
-                }
-            }
-            else {
-                if (this.target - allSolutions.lowerSol <= allSolutions.upperSol - this.target) {
-                    this.bestSolution.push(allSolutions.lowerSol);
-                    for (var i = 0; i < allSolutions.lowerSolList.length; i++) {
-                        this.listOfSolutions.push(allSolutions.lowerSolList[i]);
-                    }
-                }
-                if (this.target - allSolutions.lowerSol >= allSolutions.upperSol - this.target) {
-                    this.bestSolution.push(allSolutions.upperSol);
-                    for (var i = 0; i < allSolutions.upperSolList.length; i++) {
-                        this.listOfSolutions.push(allSolutions.upperSolList[i]);
-                    }
-                }
+        if (allSolutions.lowerSol === this.target) {
+            this.foundSol = true;
+        }
+
+        if (trials_counter > 100) {
+            //raise error
+            var generateNumbersError = true;
+            break;
+        }
+    }
+    while (!this.foundSol && this.hasExactSolution)
+
+    if (allSolutions.lowerSol === this.target) {
+        this.bestSolution.push(this.target);
+        for (var i = 0; i < allSolutions.lowerSolList.length; i++) {
+            this.listOfSolutions.push(allSolutions.lowerSolList[i]);
+            this.stringSolutions.push(allSolutions.lowerSolList[i].computation);
+        }
+    }
+    else {
+        if (this.target - allSolutions.lowerSol <= allSolutions.upperSol - this.target) {
+            this.bestSolution.push(allSolutions.lowerSol);
+            for (var i = 0; i < allSolutions.lowerSolList.length; i++) {
+                this.listOfSolutions.push(allSolutions.lowerSolList[i]);
+                this.stringSolutions.push(allSolutions.lowerSolList[i].computation);
             }
         }
-        while (!this.foundSol && this.hasExactSolution)
+        if (this.target - allSolutions.lowerSol >= allSolutions.upperSol - this.target) {
+            this.bestSolution.push(allSolutions.upperSol);
+            for (var i = 0; i < allSolutions.upperSolList.length; i++) {
+                this.listOfSolutions.push(allSolutions.upperSolList[i]);
+                this.stringSolutions.push(allSolutions.upperSolList[i].computation);
+            }
+        }
     }
+
     this.hintList = this.getHint(this.listOfSolutions);
-    this.currentSet = this.Numbers;
 };
 
 GameHandler.prototype.operate = function (a, b, oper) {
@@ -169,6 +186,8 @@ GameHandler.prototype.findSolution = function (objNum, tgt, mustUseAll) {
                         var b = numB.value;
                         var ca = numA.computation;
                         var cb = numB.computation;
+                        var fra = numA.first_result;
+                        var frb = numB.first_result;
                         //build a new array from current one, removing the two numbers used for computation.
                         var newArray = new Array();
                         for (var k = 0; k < n; k++) {
@@ -183,6 +202,17 @@ GameHandler.prototype.findSolution = function (objNum, tgt, mustUseAll) {
                             if (this.isValid(newVal)) {
                                 newCalcul = (n === 2) ? ca + this.operations[l] + cb : '(' + ca + this.operations[l] + cb + ')';
                                 var newNum = new ObjNumber(newVal, newCalcul);
+
+                                if (fra.length=== 0 && frb.length===0) {
+                                    newNum.first_result = ca + this.operations[l] + cb;
+                                }
+                                else if (fra.length>0 && frb.length>0) {
+                                    newNum.first_result=numA.first_result
+                                }
+                                else {
+                                    newNum.first_result=numA.first_result+numB.first_result
+                                }
+
                                 if (!mustUseAll) {
                                     var v = newNum.value;
                                     var temp_result = new SolutionList();
@@ -195,12 +225,6 @@ GameHandler.prototype.findSolution = function (objNum, tgt, mustUseAll) {
                                         temp_result.upperSolList.push(newNum);
                                     }
                                     result = this.aggregateSolution(temp_result, result);
-                                }
-                                if (n === 4) {
-                                    newNum.first_result = newVal;
-                                }
-                                else {
-                                    newNum.first_result = Math.max(numA.first_result, numB.first_result);
                                 }
                                 newArray.push(newNum);
                                 var tempSolution = new SolutionList();
@@ -248,19 +272,19 @@ GameHandler.prototype.aggregateSolution = function (added, existing) {
 
 GameHandler.prototype.getHint = function (allSolutions) {
     var myHints = [];
-    var firstHint = "It's possible to get " + this.target.toString().split();
-    if (!this.foundSol) {
-        firstHint = "It's not possible to get " + this.toString().split();
+    //Firts hint: indicate the best possible solution
+    if (!this.hasExactSolution) {
+        var firstHint = "Best solution is " + this.bestSolution.join(" or ");
+        myHints.push(firstHint);
     }
-    myHints.push(firstHint);
 
+    // Select one of the solution with the lowest type of operations used.
     allSolutions.sort(function () {
         return Math.random() - 0.5;
     });
     var n = allSolutions.length;
     var k = this.operations.length;
     var selected_index = 0;
-    // we select one of the solution with the lowest type of operations used.
     for (var i = 0; i < n; i++) {
         var count = 0;
         for (var l = 0; l < this.operations.length; l++) {
@@ -274,26 +298,42 @@ GameHandler.prototype.getHint = function (allSolutions) {
         }
     }
     this.selectSol = allSolutions[selected_index];
-    var used_oper = "";
-    var not_used_oper = "";
-    for (var l = 0; l < this.operations.length; l++) {
-        if (this.selectSol.computation.indexOf(this.operations[l]) >= 0) {
-            used_oper = used_oper + this.operations[l];
-        }
-        else {
-            not_used_oper = not_used_oper + this.operations[l];
-        }
-    }
-    var secondHint = "You can use only " + used_oper.split("");
-    if (not_used_oper.length === 1) {
-        secondHint = "You can do without " + not_used_oper.split("");
-    }
-    if (used_oper.length === this.operations.length) {
-        secondHint = "You need all operations.";
-    }
-    myHints.push(secondHint);
 
-    var thirdHint = "You can start by making " + this.selectSol.first_result.toString().split();
+    //Second hint: the operations to use.
+    if (this.operations.length >= 2) {
+        var used_oper = "";
+        var not_used_oper = "";
+        for (var l = 0; l < this.operations.length; l++) {
+            if (this.selectSol.computation.indexOf(this.operations[l]) >= 0) {
+                used_oper = used_oper + this.operations[l];
+            }
+            else {
+                not_used_oper = not_used_oper + this.operations[l];
+            }
+        }
+        var secondHint = "You can make it using only " + used_oper.split("").join(" and ");
+        if (not_used_oper.length === 1) {
+            secondHint = "You can make it without " + not_used_oper.split("");
+        }
+        if (used_oper.length === this.operations.length) {
+            secondHint = "You need all operations.";
+        }
+        myHints.push(secondHint);
+    }
+
+    // 3rd hint:  we indicate the first result to get or the first numbers to use.
+    if (this.mustUseAll) {
+        calcS=this.selectSol.first_result;
+        calcS=calcS.replace('x','*');
+        thirdHint= "You can start by making " +  eval(calcS).toString();
+    }
+    else {
+        calcStart = this.selectSol.first_result.toString();
+        for (var l=0; l<this.operations.length; l++) {
+            calcStart=calcStart.replace(this.operations[l].toString(),",")
+        }
+        thirdHint = "You can start by using " + calcStart.split(",").join(" and ");
+    }
     myHints.push(thirdHint);
 
     myHints.sort(function () {
