@@ -1,0 +1,272 @@
+﻿/*********************************************************************
+
+	Name:		Push - Bootstrap Button Pack
+	Author:		BootstrapBay - (http://www.bootstrapbay.com/)
+	Version:	1.0
+	
+*********************************************************************/
+
+/******************************************************
+	CUSTOM BTN VALUES
+******************************************************/
+
+.btn:focus, .btn:active:focus, .btn.active:focus {
+	outline: 0 none;
+}
+
+/******************************************************
+	STANDARD BUTTONS
+******************************************************/
+
+.btn-default {
+	border: 2px solid #C4C4C4;
+	color: #737373;
+	padding: 12px 22px;
+}
+.btn-default:hover, .btn-default:focus, .btn-default:active, .btn-default.active, .open > .dropdown-toggle.btn-default {
+	background: #FFFFFF;
+	border-color: #949494;
+	color: #737373;
+}
+.btn-default:active, .btn-default.active {
+	border-color: #737373;
+	box-shadow: none;
+}
+
+.btn-default.selected {
+    background: gold;
+}
+
+.btn-primary {
+	background: #0099cc;
+	color: #ffffff;
+}
+.btn-primary:hover, .btn-primary:focus, .btn-primary:active, .btn-primary.active, .open > .dropdown-toggle.btn-primary {
+	background: #33a6cc;
+}
+.btn-primary:active, .btn-primary.active {
+	background: #007299;
+	box-shadow: none;
+}
+.btn-success {
+	background: #00bf6f;
+	color: #ffffff;
+}
+.btn-success:hover, .btn-success:focus, .btn-success:active, .btn-success.active, .open > .dropdown-toggle.btn-success {
+	background: #39bf87;
+}
+.btn-success:active, .btn-success.active {
+	background: #008c52;
+	box-shadow: none;
+}
+.btn-info {
+	background: #31cde8;
+	color: #ffffff;
+}
+.btn-info:hover, .btn-info:focus, .btn-info:active, .btn-info.active, .open > .dropdown-toggle.btn-info {
+	background: #5fd4e8;
+}
+.btn-info:active, .btn-info.active {
+	background: #35a2b5;
+	box-shadow: none;
+}
+.btn-warning {
+	background: #eb8f34;
+	color: #ffffff;
+}
+.btn-warning:hover, .btn-warning:focus, .btn-warning:active, .btn-warning.active, .open > .dropdown-toggle.btn-warning {
+	background: #eba259;
+}
+.btn-warning:active, .btn-warning.active {
+	background: #b87430;
+	box-shadow: none;
+}
+.btn-danger {
+	background: #f25454;
+	color: #ffffff;
+}
+.btn-danger:hover, .btn-danger:focus, .btn-danger:active, .btn-danger.active, .open > .dropdown-toggle.btn-danger {
+	background: #f26d6d;
+}
+.btn-danger:active, .btn-danger.active {
+	background: #bf4343;
+	box-shadow: none;
+}
+
+/******************************************************
+	SHARP BUTTONS
+******************************************************/
+
+.btn.sharp {
+	border-radius: 0;
+}
+
+/******************************************************
+	OUTLINE BUTTONS
+******************************************************/
+.btn.outline {
+	background: none;
+	padding: 10px 19px;
+}
+
+@media only screen and (min-width : 768px) {
+    .btn.outline {
+	background: none;
+	padding: 14px 25px;
+    }
+}
+
+.btn-primary.outline {
+	border: 2px solid #0099cc;
+	color: #0099cc;
+}
+.btn-primary.outline:hover, .btn-primary.outline:focus, .btn-primary.outline:active, .btn-primary.outline.active, .open > .dropdown-toggle.btn-primary {
+	color: #33a6cc;
+	border-color: #33a6cc;
+}
+.btn-primary.outline:active, .btn-primary.outline.active {
+	border-color: #007299;
+	color: #007299;
+	box-shadow: none;
+}
+.btn-success.outline {
+	border: 2px solid #00bf6f;
+	color: #00bf6f;
+}
+.btn-success.outline:hover, .btn-success.outline:focus, .btn-success.outline:active, .btn-success.outline.active, .open > .dropdown-toggle.btn-success {
+	border-color: #39bf87;
+	color: #39bf87;
+}
+.btn-success.outline:active, .btn-success.outline.active {
+	border-color: #008c52;
+	color: #008c52;
+	box-shadow: none;
+}
+.btn-info.outline {
+	border: 2px solid #31cde8;
+	color: #31cde8;
+}
+.btn-info.outline:hover, .btn-info.outline:focus, .btn-info.outline:active, .btn-info.outline.active, .open > .dropdown-toggle.btn-info {
+	border-color: #5fd4e8;
+	color: #5fd4e8;
+}
+.btn-info.outline:active, .btn-info.outline.active {
+	border-color: #35a2b5;
+	color: #35a2b5;
+	box-shadow: none;
+}
+.btn-warning.outline {
+	border: 2px solid #eb8f34;
+	color: #eb8f34;
+}
+.btn-warning.outline:hover, .btn-warning.outline:focus, .btn-warning.outline:active, .btn-warning.outline.active, .open > .dropdown-toggle.btn-warning {
+	border-color: #eba259;
+	color: #eba259;
+}
+.btn-warning.outline:active, .btn-warning.outline.active {
+	border-color: #b87430;
+	color: #b87430;
+	box-shadow: none;
+}
+.btn-danger.outline {
+	border: 2px solid #f25454;
+	color: #f25454;
+}
+.btn-danger.outline:hover, .btn-danger.outline:focus, .btn-danger.outline:active, .btn-danger.outline.active, .open > .dropdown-toggle.btn-danger {
+	border-color: #f26d6d;
+	color: #f26d6d;
+}
+.btn-danger.outline:active, .btn-danger.outline.active {
+	border-color: #bf4343;
+	color: #bf4343;
+	box-shadow: none;
+}
+
+/******************************************************
+	ROUNDED BUTTONS
+******************************************************/
+
+
+.btn-lg.round {
+	border-radius: 32px;
+}
+.btn-sm.round {
+	border-radius: 14px;
+}
+.btn-xs.round {
+	border-radius: 10px;
+}
+
+/******************************************************
+	RAISED BUTTONS
+******************************************************/
+
+.btn-primary.raised {
+	box-shadow: 0 3px 0 0 #007299;
+}
+.btn-primary.raised:active, .btn-primary.raised.active {
+	background: #33a6cc;
+	box-shadow: none;
+	margin-bottom: -3px;
+	margin-top: 3px;
+}
+.btn-success.raised {
+	box-shadow: 0 3px 0 0 #008c52;
+}
+.btn-success.raised:active, .btn-success.raised.active {
+	background: #39bf87;
+	box-shadow: none;
+	margin-bottom: -3px;
+	margin-top: 3px;
+}
+.btn-info.raised {
+	box-shadow: 0 3px 0 0 #35a2b5;
+}
+.btn-info.raised:active, .btn-info.raised.active {
+	background: #5fd4e8;
+	box-shadow: none;
+	margin-bottom: -3px;
+	margin-top: 3px;
+}
+.btn-warning.raised {
+	box-shadow: 0 3px 0 0 #b87430;
+}
+.btn-warning.raised:active, .btn-warning.raised.active {
+	background: #eba259;
+	box-shadow: none;
+	margin-bottom: -3px;
+	margin-top: 3px;
+}
+.btn-danger.raised {
+	box-shadow: 0 3px 0 0 #bf4343;
+}
+.btn-danger.raised:active, .btn-danger.raised.active {
+	background: #f26d6d;
+	box-shadow: none;
+	margin-bottom: -3px;
+	margin-top: 3px;
+}
+
+/******************************************************
+	BUTTON SIZING
+******************************************************/
+
+.btn-xs, .btn-group-xs > .btn {
+	padding: 2px 6px;
+}
+.btn-sm, .btn-group-sm > .btn {
+	padding: 8px 12px;
+}
+.btn-lg {
+	padding: 20px 40px;
+	border-radius: 4px;
+}
+.btn-xs.btn-default, .btn-xs.outline {
+	padding: 0px 4px;
+}
+.btn-sm.btn-default, .btn-sm.outline {
+	padding: 6px 10px;
+}
+.btn-lg.btn-default, .btn-lg.outline {
+	padding: 18px 38px;
+}

@@ -1,0 +1,22 @@
+Back to full JS script
+
+Start from current Django version:
+
+convert index.html in full html with cdn link and test static page is working OK
+get bootstarp and jquery in local files OK
+
+
+convert the GameHandler in JS. Check difference with previous JS part
+- plug previous gaemhandler OK
+- update gamehandler with change which have been made
+
+WEB HOST:
+unsuscribe Heroku
+Check other web hosting service for simple html/css/js
+
+LICENSE - COPYRIGHT
+Check different licenses (BSD Simplified?)
+Study possibility to share in GitHub
+
+
+
