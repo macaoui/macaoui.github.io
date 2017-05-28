@@ -51,7 +51,7 @@ function updateInfo() {
     lev_title = ctn.attr('title');
     $('#info_display').attr('data-content', lev_info);
     $('#info_display').attr('data-original-title', lev_title);
-    $('#display_level').text('Level: '+lev_title);
+    $('#display_level').text('Level: '+lev_title + ' ');
 }
 
 function hintShow(hintTimer) {

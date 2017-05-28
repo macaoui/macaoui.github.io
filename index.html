@@ -77,7 +77,6 @@
                 </div>
 
                 <div id="restart" class="container">
-                    <form action="/" method='post' class="form-inline">
                         <div class="container text-center">
                             <button type="button" id="try_again" class="btn round btn-warning outline retry"> Try Again </button>
                             <button type="button" class="btn round btn-success outline btn-new"> Next </button>
@@ -86,7 +85,7 @@
                             <div id="select_container" class="btn-group btn-group-justified">
 
                                 <button type="button" class="level_btn btn round btn-default "
-                                        value=0 info="For the younger ones learning how to add up...
+                                        value=0 info="For the younger ones learning how to add up.
                                         You don&#39;t have to use all numbers.
                                         There is always a solution.
                                         " title="Very Easy"></button>
@@ -106,20 +105,23 @@
                                 <button type="button" class="level_btn btn round btn-default "
                                         value=3 info="With the 4 usual operations.
                                         You have to use all numbers.
-                                        There is not always a solution: find the best possible result.
+                                        There is not always a solution: find the closest result.
                                         " title="Challenging"></button>
 
                                 <button type="button" class="level_btn btn round btn-default "
                                         value=4 info="Five numbers, many possibilities.
                                         You have to use all numbers.
-                                        There is not always a solution: find the best possible result.
+                                        There is not always a solution: find the closest result.
                                         " title="Very Challenging"></button>
 
                             </div>
                         </div>
-                    </form>
                 </div>
-                <div id="display_level" class="display_text">Level: </div>
+                <div class="level_container wrap">
+                    <div id="display_level" class="display_text center-block">Level: </div>
+                    <span id="info_display" class="glyphicon glyphicon-info-sign center-block"
+                        data-toggle="popover" data-content="" data-placement="bottom"></span>
+                </div>
                 <div id="display_hint" class="display_text"></div>
                 <div id="hint_sol" class="container text-center">
                     <button type="button" id="hint" class="btn round btn-danger outline">Hint</button>
