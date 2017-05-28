@@ -12,7 +12,7 @@ Jquery - Bootstrap
 
 
 *** What to develop ***
-- Challenge mode where on can play [10] games in a row and get a score
+- Challenge mode where one can play [10] games in a row and get a score
 - Possibility to define a custom level
 - Improve Graphical interface
 - Translate in several languages

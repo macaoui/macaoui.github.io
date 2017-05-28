@@ -15,8 +15,8 @@ unsuscribe Heroku
 Check other web hosting service for simple html/css/js
 
 LICENSE - COPYRIGHT
-Check different licenses (BSD Simplified?)
-Study possibility to share in GitHub
+Check different licenses (BSD Simplified?) OK
+Study possibility to share in GitHub OK
 
 
 
