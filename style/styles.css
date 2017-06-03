@@ -17,7 +17,7 @@
 	border-radius: 24px;
 }
 
-    .display_text { 
+.display_text { 
   font-size: 14px;
   text-align: center;
  }
@@ -30,11 +30,19 @@
     display: inline-block;
 }
 
-    #display_hint {
-  margin: auto;
-  margin-top: 15px;
-  color: indianred;
-    }
+.level_container {
+    margin-top: 10px;
+}
+
+#info_display {
+    margin-top: 3px;
+}
+
+#display_hint {
+margin: auto;
+margin-top: 15px;
+color: indianred;
+}
 
 #retry_text {
     font-size: 18px;
@@ -61,9 +69,10 @@
 	border-radius: 36px;
 }
 
-  .display_text {
+ .display_text {
       font-size: 18px;
   }
+
   }
 
 .page-header {margin:0;
@@ -132,7 +141,4 @@ select{
     width: 100%;
 }
 
-.glyphicon.glyphicon-question-sign {
-    font-size: 25px;
-}
 
