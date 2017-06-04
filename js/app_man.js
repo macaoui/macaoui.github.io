@@ -32,8 +32,6 @@ function actuateScreen(nSet) {
                 nSet[i].order + '">' + nSet[i].value + '</button>');
         }
     }
-    // add a condition to make button size according to number length
-
 };
 
 function actuateOperands(nOper) {
@@ -224,6 +222,10 @@ $(document).ready(function () {
         $('#display_hint').text(myHint);
         hintsGiven++;
     });
+
+    $(document).on('click','#solverLaunch', function() {
+        $('#solverModal').modal('show');
+})
 
     $('[data-toggle="popover"]').click(function () {
 

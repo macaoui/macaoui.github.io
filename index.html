@@ -1,6 +1,29 @@
 ﻿﻿<!DOCTYPE html>
 <html lang="en">
 <head>
+    <!--
+            MIT License
+
+Copyright (c) 2017 Jacques Clot
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+    -->
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -19,8 +42,85 @@
 </head>
 
 <body>
+    <!-- Static navbar -->
+    <nav class="navbar navbar-default navbar-fixed-bottom">
+        <div class="container">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle collapsed"
+                        data-toggle="collapse" data-target="#navbar"
+                        aria-expanded="false" aria-controls="navbar">
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+            </div>
+            <div id="navbar" class="navbar-collapse collapse">
+                <ul class="nav navbar-nav wrap">
+                    <li id="solverLaunch">Solve</li>
+                </ul>
+            </div>
+
+        </div>
+    </nav>
     <div class="container">
         <div>
+            <!-- Modal Solver -->
+            <div class="modal fade" id="solverModal" role="dialog">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal">&times;</button>
+                        </div>
+                        <div class="modal-body">
+                            <form>
+                                <div class="form-group">
+                                    <label for="targetInput">Target:</label>
+                                    <input type="number" class="form-control" name="solverTarget" min="0" max="999999" required>
+                                </div>
+                                <div class="form-group">
+                                    <fieldset>
+                                        <label>Numbers:</label>
+                                        <div class="wrap">
+                                            <input type="number" class="form-control numInput" name="solverNum1" min="0" max="99" required>
+                                            <input type="number" class="form-control numInput" name="solverNum2" min="0" max="99" required>
+                                            <input type="number" class="form-control numInput" name="solverNum3" min="0" max="99" required>
+                                            <input type="number" class="form-control numInput" name="solverNum4" min="0" max="99">
+                                        </div>
+
+                                    </fieldset>
+
+                                </div>
+
+                                <fieldset class="form-group">
+                                    <legend>Operations</legend>
+                                    <div class="form-check">
+                                        <label class="form-check-label">
+                                            <input type="checkbox" class="form-check-input opeInput" name="solverPlus" id="solverPlus" value="plus" checked> +
+                                        </label>
+                                        <label class="form-check-label">
+                                            <input type="checkbox" class="form-check-input opeInput" name="solverMinus" id="solverPlus" value="minus" checked> -
+                                        </label>
+                                        <label class="form-check-label">
+                                            <input type="checkbox" class="form-check-input opeInput" name="solverMultiply" id="solverMultiply" value="multiply" checked> x
+                                        </label>
+                                        <label class="form-check-label">
+                                            <input type="checkbox" class="form-check-input opeInput" name="solverDivide" id="solverDivide" value="divide" checked> /
+                                        </label>
+                                    </div>
+                                </fieldset>
+                                <div class="form-check">
+                                    <label class="form-check-label">
+                                        <input type="checkbox" class="form-check-input" name="solverUseAll" id="solverUseAll" checked>
+                                        Must use all numbers
+                                    </label>
+                                </div>
+                                <button type="button" class="btn round btn-info outline center-block btn-solver" data-dismiss="modal"> Solve It! </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
 
             <!-- Modal Win -->
             <div class="modal fade" id="winModal" role="dialog">
@@ -34,7 +134,7 @@
                         </div>
                         <div class="modal-footer">
                             <div class="container wrap">
-                                    <button type="button" class="btn round btn-success outline center-block btn-new" data-dismiss="modal"> New Game </button>
+                                <button type="button" class="btn round btn-success outline center-block btn-new" data-dismiss="modal"> New Game </button>
                             </div>
                         </div>
                     </div>
@@ -77,50 +177,50 @@
                 </div>
 
                 <div id="restart" class="container">
-                        <div class="container text-center">
-                            <button type="button" id="try_again" class="btn round btn-warning outline retry"> Try Again </button>
-                            <button type="button" class="btn round btn-success outline btn-new"> Next </button>
-                        </div>
-                        <div class="container text-center">
-                            <div id="select_container" class="btn-group btn-group-justified">
+                    <div class="container text-center">
+                        <button type="button" id="try_again" class="btn round btn-warning outline retry"> Try Again </button>
+                        <button type="button" class="btn round btn-success outline btn-new"> Next </button>
+                    </div>
+                    <div class="container text-center">
+                        <div id="select_container" class="btn-group btn-group-justified">
 
-                                <button type="button" class="level_btn btn round btn-default "
-                                        value=0 info="For the younger ones learning how to add up.
+                            <button type="button" class="level_btn btn round btn-default "
+                                    value=0 info="For the younger ones learning how to add up.
                                         You don&#39;t have to use all numbers.
                                         There is always a solution.
                                         " title="Very Easy"></button>
 
-                                <button type="button" class="level_btn btn round btn-default "
-                                        value=1 info="To practice addition and subtraction.
+                            <button type="button" class="level_btn btn round btn-default "
+                                    value=1 info="To practice addition and subtraction.
                                         You don&#39;t have to use all numbers.
                                         There is always a solution.
                                         " title="Easy"></button>
 
-                                <button type="button" class="level_btn btn round btn-default  selected "
-                                        value=2 info="Add, substract and multiply. Can be challenging for anyone!
+                            <button type="button" class="level_btn btn round btn-default  selected "
+                                    value=2 info="Add, substract and multiply. Can be challenging for anyone!
                                         You have to use all numbers.
                                         There is always a solution.
                                         " title="Medium"></button>
 
-                                <button type="button" class="level_btn btn round btn-default "
-                                        value=3 info="With the 4 usual operations.
+                            <button type="button" class="level_btn btn round btn-default "
+                                    value=3 info="With the 4 usual operations.
                                         You have to use all numbers.
                                         There is not always a solution: find the closest result.
                                         " title="Challenging"></button>
 
-                                <button type="button" class="level_btn btn round btn-default "
-                                        value=4 info="Five numbers, many possibilities.
+                            <button type="button" class="level_btn btn round btn-default "
+                                    value=4 info="Five numbers, many possibilities.
                                         You have to use all numbers.
                                         There is not always a solution: find the closest result.
                                         " title="Very Challenging"></button>
 
-                            </div>
                         </div>
+                    </div>
                 </div>
                 <div class="level_container wrap">
                     <div id="display_level" class="display_text center-block">Level: </div>
                     <span id="info_display" class="glyphicon glyphicon-info-sign center-block"
-                        data-toggle="popover" data-content="" data-placement="bottom"></span>
+                          data-toggle="popover" data-content="" data-placement="bottom"></span>
                 </div>
                 <div id="display_hint" class="display_text"></div>
                 <div id="hint_sol" class="container text-center">
