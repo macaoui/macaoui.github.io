@@ -227,11 +227,15 @@ $(document).ready(function () {
         $('#solverModal').modal('show');
 })
 
-    $('[data-toggle="popover"]').click(function () {
-
+    $(document).on('click','#info_display', function() {
         setTimeout(function () {
-            $('.popover').fadeOut('slow');
-        }, 6000);
+            $('#info_display').popover("hide");
+        }, 5000);
+    })
+
+
+    $('#info_display').on('hidden.bs.popover', function (e) {
+        $(e.target).data("bs.popover").inState = { click: false, hover: false, focus: false }
     });
 
 });

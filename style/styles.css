@@ -4,20 +4,25 @@
     padding:0;
   }
 
-  .btn {
-	padding: 12px 21px;
-	border: 0 none;
-        font-size: 18px;
-	font-weight: 700;
-	letter-spacing: 1px;
-	text-transform: uppercase;
+  #numbers_container {
+    margin-top: 30px;
 }
 
-.btn.round {
-	border-radius: 24px;
+#operands_container {
+    margin-top: 30px;
 }
 
-.display_text { 
+.level_container {
+    margin-top: 10px;
+}
+
+#select_container {
+    padding:0;
+    margin:20px 10% 0px 10%;
+    width:80%;
+}
+
+  .display_text { 
   font-size: 14px;
   text-align: center;
  }
@@ -30,8 +35,17 @@
     display: inline-block;
 }
 
-.level_container {
-    margin-top: 10px;
+  .btn {
+	padding: 12px 21px;
+	border: 0 none;
+        font-size: 18px;
+	font-weight: 700;
+	letter-spacing: 1px;
+	text-transform: uppercase;
+}
+
+.btn.round {
+	border-radius: 24px;
 }
 
 #info_display {
@@ -72,6 +86,12 @@ color: indianred;
  .display_text {
       font-size: 18px;
   }
+  
+ #select_container {
+    padding:0;
+    margin: 20px 26% 0px 26%;
+    width:49%;
+}
 
   }
 
@@ -102,19 +122,6 @@ h3 {
   padding:0;
 }
 
-select{
-    text-align-last:center;
-    padding-right: 20px;
-}
-
-#numbers_container {
-    margin-top: 30px;
-}
-
-#operands_container {
-    margin-top: 30px;
-}
-
 .number {
     margin: 0px 3px 0px 3px;
     font-weight: 800;
@@ -129,9 +136,7 @@ select{
     margin-top: 60px;
 }
 
-#select_container {
-    margin-top: 20px;
-}
+
 
 #hint_sol {
     margin-top: 40px;
