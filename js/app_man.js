@@ -42,6 +42,27 @@ function actuateOperands(nOper) {
     }
 }
 
+function createLevelBar(allLevels,level) {
+    ctn = $('#select_container');
+    ctn.empty();
+    for (i = 0; i < 5; i++) {
+        lev = allLevels[i];
+        var selected_text= i===level? 'selected':'';
+        var operation_text = lev.ops.length === 1 ? "Operation only " + lev.ops : "Operations " + lev.ops.split("").join(", ");
+        var allnum_text = lev.mustUseAll ? 'Must use all numbers ' : 'Do not have to use all numbers ';
+        var sol_text = lev.hasExactSol ? 'Always a solution ' : 'Not always a solution ';
+        text = '<div class="btn-group" role="group">' +
+                                '<button type="button" class="level_btn btn round btn-default '+ selected_text+'"' +
+                                        'value=' + parseInt(i) + ' info="' +
+                                         operation_text + ' <br>' +
+                                        allnum_text + '<br>' +
+                                        sol_text +
+                                        '" title="' + lev.lname +'"></button>' +
+                                        '</div>';
+        ctn.append(text);
+    }
+}
+
 function updateInfo() {
     ctn = $('.level_btn.selected');
     level = ctn.attr('value');
@@ -128,18 +149,26 @@ function initGame(gameHandler) {
 
 // Wait till the browser is ready to render the game.
 $(document).ready(function () {
-    var very_easyLevel = new GameLevel("Very Easy", 4, 0, 9, "+", 1, 9, 1, true, false, false);
-    var easyLevel = new GameLevel("Easy", 4, 0, 9, "+-", 1, 9, 1, true, false, false);
+    var very_easyLevel = new GameLevel("Add and hop", 4, 0, 9, "+", 1, 9, 1, true, false, false);
+    var very_easyadvancedLevel = new GameLevel("Add more", 5, 0, 9, "+", 1, 20, 1, true, false, false);
+    var easyLevel = new GameLevel("Plus and minus", 4, 0, 9, "+-", 1, 9, 1, true, false, false);
+    var minusLevel = new GameLevel("Only minus", 6, 0, 9, "-", 0, 9, 1, true, true, true);
+    var easyadvancedLevel = new GameLevel("Plus and minus - Advanced", 6, 0, 9, "+-", 1, 9, 1, true, true, true);
     var mediumLevel = new GameLevel("Medium", 4, 1, 9, "+-x", 4, 48, 4, true, true, true);
-    var hardLevel = new GameLevel("Hard", 4, 1, 10, "+-x/", 6, 72, 6, false, true, true);
-    var very_hardLevel = new GameLevel("Very Hard", 5, 1, 10, "+-x/", 12, 240, 2, false, true, true);
+    var mediumadvancedLevel = new GameLevel("Medium Challenging", 5, 1, 9, "+-x", 3, 99, 3, false, true, true);
+    var twentyfourLevel = new GameLevel("Make 24", 4, 1, 10, "+-x/", 24, 24, 1, true, true, true);
+    var hardLevel = new GameLevel("Challenging", 4, 1, 10, "+-x/", 6, 72, 6, false, true, true);
+    var very_hardLevel = new GameLevel("Ultimate", 5, 1, 10, "+-x/", 12, 240, 2, false, true, true);
     var allLevels = [];
-    allLevels.push(very_easyLevel, easyLevel, mediumLevel, hardLevel,very_hardLevel);
-    var level = $('.level_btn.selected').attr('value');
+    allLevels.push(very_easyLevel, very_easyadvancedLevel, easyLevel, minusLevel, easyadvancedLevel, mediumLevel, mediumadvancedLevel,
+                    twentyfourLevel, hardLevel, very_hardLevel);
+    var level = 2;
     var sLevel = allLevels[level];
     var gameHandler = new GameHandler(sLevel.size, sLevel.min_number, sLevel.max_number, sLevel.ops,
                         sLevel.tgt_min, sLevel.tgt_max, sLevel.tgt_step, sLevel.hasExactSol, sLevel.mustUseAll, sLevel.CGTarget);
+    createLevelBar(allLevels, level);
     initGame(gameHandler);
+
     $('[data-toggle="popover"]').popover();
 
     //click on number
@@ -195,8 +224,8 @@ $(document).ready(function () {
     });
 
     $(document).on('click', '.level_btn', function () {
+        $('.level_btn').removeClass('selected');
         $(this).addClass('selected');
-        $(this).siblings().removeClass('selected');
         updateInfo();
     });
 
