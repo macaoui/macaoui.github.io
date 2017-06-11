@@ -42,10 +42,9 @@ function actuateOperands(nOper) {
     }
 }
 
-function createLevelBar(allLevels,level) {
-    ctn = $('#select_container');
+function createLevelBar(ctn,allLevels,level, start_index) {
     ctn.empty();
-    for (i = 0; i < 5; i++) {
+    for (i = start_index; i < start_index+5; i++) {
         lev = allLevels[i];
         var selected_text= i===level? 'selected':'';
         var operation_text = lev.ops.length === 1 ? "Operation only " + lev.ops : "Operations " + lev.ops.split("").join(", ");
@@ -166,7 +165,11 @@ $(document).ready(function () {
     var sLevel = allLevels[level];
     var gameHandler = new GameHandler(sLevel.size, sLevel.min_number, sLevel.max_number, sLevel.ops,
                         sLevel.tgt_min, sLevel.tgt_max, sLevel.tgt_step, sLevel.hasExactSol, sLevel.mustUseAll, sLevel.CGTarget);
-    createLevelBar(allLevels, level);
+    var level_container1 = $('#select_container');
+    var level_container2 = $('#select_container2');
+    createLevelBar(level_container1, allLevels, level, 0);
+    createLevelBar(level_container2, allLevels, level, 5);
+
     initGame(gameHandler);
 
     $('[data-toggle="popover"]').popover();

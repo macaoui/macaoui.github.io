@@ -12,11 +12,11 @@
     margin-top: 30px;
 }
 
-.level_container {
+.display_level_container {
     margin-top: 10px;
 }
 
-#select_container {
+.select_container {
     padding:0;
     margin:20px 10% 0px 10%;
     width:80%;
@@ -87,7 +87,7 @@ color: indianred;
       font-size: 18px;
   }
   
- #select_container {
+ .select_container {
     padding:0;
     margin: 20px 26% 0px 26%;
     width:49%;
