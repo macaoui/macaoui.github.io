@@ -83,22 +83,6 @@ function displayHint() {
     hint_b.fadeIn(3000);
 }
 
-function testEndGame(nSet, currentValue, mustUseAll, bestSolution) {
-    if (nSet.length === 1) {
-        if (nSet[0].value === bestSolution[0] || nSet[0].value === bestSolution[1]) {
-            $('#winModal').modal('show');
-        }
-        else {
-            $('#loseModal').modal('show');
-        }
-    }
-    else {
-        if (!mustUseAll && (currentValue === bestSolution[0] || currentValue === bestSolution[1])) {
-            $('#winModal').modal('show');
-        }
-    }
-};
-
 function operate(a, b, oper) {
     switch (oper) {
         case "+":
@@ -126,32 +110,92 @@ function isValid(c) {
     return (c >= 0 && Math.abs(c - Math.round(c)) < 0.000001);
 };
 
-function initGame(gameHandler) {
-    numbers = gameHandler.Numbers;
-    target = gameHandler.target;
-    ops = gameHandler.operations;
-    hintList = gameHandler.hintList;
-    bestSolution = gameHandler.bestSolution;
-    mustUseAll = gameHandler.mustUseAll;
-    timer = 5;
 
-    numSet = initSet(numbers);
-    $('#display_target').text("Make " + target);
-    actuateScreen(numSet);
-    actuateOperands(ops);
-    updateInfo();
-    hintsGiven = 0;
-    $('#display_hint').text("  ");
-    hintTimer = timer * 1000;
-    hintShow(hintTimer);
-};
+
+function endChallenge() {
+    challengeStatus = false;
+    // update high score
+}
 
 // Wait till the browser is ready to render the game.
 $(document).ready(function () {
+
+    function startChrono() {
+        if (typeof (Worker) !== "undefined") {
+            if (typeof (w) == "undefined") {
+                w = new Worker("./js/timer.js");
+            }
+            w.onmessage = function (event) {
+                document.getElementById("current_score").innerHTML = event.data;
+            };
+        } else {
+            document.getElementById("current_score").innerHTML = "NA";
+        }
+    }
+
+    function stopChrono() {
+        w.terminate();
+        w = undefined;
+    }
+
+    function initGame(gameHandler) {
+        numbers = gameHandler.Numbers;
+        target = gameHandler.target;
+        ops = gameHandler.operations;
+        hintList = gameHandler.hintList;
+        bestSolution = gameHandler.bestSolution;
+        mustUseAll = gameHandler.mustUseAll;
+        timer = 5;
+
+        numSet = initSet(numbers);
+        $('#display_target').text("Make " + target);
+        actuateScreen(numSet);
+        actuateOperands(ops);
+        var ctn_play = $('#play_icon_container');
+        ctn_play.empty()
+        if (challengeStatus) {
+            document.getElementById("total_score").innerHTML = totalScore;
+            startChrono();
+        } else {
+            ctn_play.append('<span id="play_icon" class="glyphicon glyphicon-expand center-block"></span>')
+        }
+        updateInfo();
+        hintsGiven = 0;
+        $('#display_hint').text("  ");
+        hintTimer = timer * 1000;
+        hintShow(hintTimer);
+    };
+    function testEndGame(nSet, currentValue, mustUseAll, bestSolution, challengeStatus) {
+        if (nSet.length === 1) {
+            if (nSet[0].value === bestSolution[0] || nSet[0].value === bestSolution[1]) {
+                if (challengeStatus) {
+                    stopChrono();
+                    totalScore = totalScore + parseInt(document.getElementById("current_score").innerHTML)
+                    document.getElementById("total_score").innerHTML = totalScore;
+                }
+                $('#winModal').modal('show');
+            }
+            else {
+                $('#loseModal').modal('show');
+            }
+        }
+        else {
+            if (!mustUseAll && (currentValue === bestSolution[0] || currentValue === bestSolution[1])) {
+                if (challengeStatus) {
+                    stopChrono();
+                    totalScore = totalScore + parseInt(document.getElementById("current_score").innerHTML)
+                    document.getElementById("total_score").innerHTML = totalScore;
+                }
+                $('#winModal').modal('show');
+            }
+        }
+    };
+
+
     var very_easyLevel = new GameLevel("Add and hop", 4, 0, 9, "+", 1, 9, 1, true, false, false);
     var very_easyadvancedLevel = new GameLevel("Add more", 5, 0, 9, "+", 1, 20, 1, true, false, false);
     var easyLevel = new GameLevel("Plus and minus", 4, 0, 9, "+-", 1, 9, 1, true, false, false);
-    var minusLevel = new GameLevel("Only minus", 6, 0, 9, "-", 0, 9, 1, true, true, true);
+    var minusLevel = new GameLevel("The Strange Mr Minus", 6, 0, 9, "-", 0, 9, 1, true, true, true);
     var easyadvancedLevel = new GameLevel("Plus and minus - Advanced", 6, 0, 9, "+-", 1, 9, 1, true, true, true);
     var mediumLevel = new GameLevel("Medium", 4, 1, 9, "+-x", 4, 48, 4, true, true, true);
     var mediumadvancedLevel = new GameLevel("Medium Challenging", 5, 1, 9, "+-x", 3, 99, 3, false, true, true);
@@ -169,6 +213,11 @@ $(document).ready(function () {
     var level_container2 = $('#select_container2');
     createLevelBar(level_container1, allLevels, level, 0);
     createLevelBar(level_container2, allLevels, level, 5);
+    var challengeStatus = false;
+    var gamesPlayed = 0;
+    var numGamesChallenge = 10;
+    var totalScore = 0;
+
 
     initGame(gameHandler);
 
@@ -208,7 +257,7 @@ $(document).ready(function () {
                     var newNum = new NumberObject(c,  order_b, true);
                     numSet.push(newNum);
                     actuateScreen(numSet);      // update screen and manage game end.
-                    testEndGame(numSet, c, mustUseAll,bestSolution);
+                    testEndGame(numSet, c, mustUseAll,bestSolution,challengeStatus);
                     $('.operand.op_selected').removeClass('op_selected outline');                     //unselect operand
 
                 }
@@ -245,6 +294,13 @@ $(document).ready(function () {
         sLevel = allLevels[level];
         gameHandler = new GameHandler(sLevel.size, sLevel.min_number, sLevel.max_number, sLevel.ops,
                             sLevel.tgt_min, sLevel.tgt_max, sLevel.tgt_step, sLevel.hasExactSol, sLevel.mustUseAll, sLevel.CGTarget);
+        if (challengeStatus) {
+            gamesPlayed++;
+            //and update score
+            if (gamesPlayed >= numGamesChallenge) {
+                endChallenge(); // update highscore and back to casual game state
+            }
+        }
         initGame(gameHandler);
     });
 
@@ -265,6 +321,30 @@ $(document).ready(function () {
         }, 5000);
     })
 
+    $(document).on('click', '#play_icon', function () {
+        $('#playModal').modal('show');
+    })
+
+    $(document).on('click', '#casual_text', function () {
+        $('#playModal').modal('hide');
+        level = $('.level_btn.selected').attr('value');
+        sLevel = allLevels[level];
+        gameHandler = new GameHandler(sLevel.size, sLevel.min_number, sLevel.max_number, sLevel.ops,
+                            sLevel.tgt_min, sLevel.tgt_max, sLevel.tgt_step, sLevel.hasExactSol, sLevel.mustUseAll, sLevel.CGTarget);
+        initGame(gameHandler);
+    })
+
+    $(document).on('click', '#challenge_text', function () {
+        $('#playModal').modal('hide');
+        challengeStatus = true;
+        level = $('.level_btn.selected').attr('value');
+        sLevel = allLevels[level];
+        gameHandler = new GameHandler(sLevel.size, sLevel.min_number, sLevel.max_number, sLevel.ops,
+                            sLevel.tgt_min, sLevel.tgt_max, sLevel.tgt_step, sLevel.hasExactSol, sLevel.mustUseAll, sLevel.CGTarget);
+        totalScore = 0;
+        gamesPlayed = 0;
+        initGame(gameHandler);
+    })
 
     $('#info_display').on('hidden.bs.popover', function (e) {
         $(e.target).data("bs.popover").inState = { click: false, hover: false, focus: false }

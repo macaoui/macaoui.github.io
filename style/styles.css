@@ -52,6 +52,13 @@
     margin-top: 3px;
 }
 
+#play_icon {
+    color:gold;
+    font-size: 36px;
+    margin-left: 12px;
+}
+
+
 #display_hint {
 margin: auto;
 margin-top: 15px;

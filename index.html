@@ -125,6 +125,28 @@ SOFTWARE.
                 </div>
             </div>
 
+            <!-- Modal Play -->
+            <div class="modal fade" id="playModal" role="dialog">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal">&times;</button>
+                        </div>
+                        <div class="modal-body">
+                            <div id="casual_text" class="">
+                                <b>Casual Play</b> <br>
+                                <small>No chrono, no score.</small>
+                            </div>
+                            <hr />
+                            <div id="challenge_text" class="">
+                                <b>Go Challenge</b> <br>
+                                <small>10 games chrono</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
 
             <!-- Modal Win -->
             <div class="modal fade" id="winModal" role="dialog">
@@ -165,7 +187,11 @@ SOFTWARE.
             </div>
 
             <div class="container">
+                <div id="score_container">
+                    <p>Current Score: <output id="current_score"></output> Total Score: <output id="total_score"></output></p>
+                </div>
                 <h3 id="display_target">Make 32</h3>
+
 
                 <div id="numbers_container" class="container text-center">
                     <button type="button" class="btn round raised btn-primary number">1</button>
@@ -193,10 +219,13 @@ SOFTWARE.
                     </div>
 
                 </div>
-                <div class="display_level_container wrap">
+                <div id="display_level_container" class="display_level_container wrap">
                     <div id="display_level" class="display_text center-block">Level: </div>
                     <span id="info_display" class="glyphicon glyphicon-info-sign center-block"
                           data-toggle="popover" data-content="" data-html="true" data-placement="bottom"></span>
+                    <div id="play_icon_container">
+                        <span id="play_icon" class="glyphicon glyphicon-expand center-block"></span>
+                    </div>
                 </div>
                 <div id="display_hint" class="display_text"></div>
                 <div id="hint_sol" class="container text-center">
