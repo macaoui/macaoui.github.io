@@ -153,4 +153,46 @@ h3 {
     width: 100%;
 }
 
+#score_container {
+  margin: 0 4px 20px 4px;
+  padding: 0;
+  text-align: center; }
+
+#cur_score::after {
+    content: "Timer";
+}
+
+#tot_score::after {
+    content: "Total";
+}
+
+#hi_score::after {
+    content: "Best";
+}
+
+.score::after {
+    position: absolute;
+    width: 100%;
+    top: 10px;
+    left: 0;
+    text-transform: uppercase;
+    font-size: 13px;
+    line-height: 13px;
+    text-align: center;
+    color: #eee4da;
+}
+.score {
+    position: relative;
+    display: inline-block;
+    background: #bbada0;
+    padding: 15px 25px;
+    font-size: 25px;
+    height: 25px;
+    line-height: 47px;
+    font-weight: bold;
+    border-radius: 3px;
+    color: white;
+    margin-top: 8px;
+    text-align: center;
+}
 

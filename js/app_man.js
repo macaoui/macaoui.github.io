@@ -1,6 +1,6 @@
 ﻿var num_container = $('#numbers_container');
 var ope_container = $('#operands_container');
-// create an object number with order attribute and isNew attribute
+// create an number object with order attribute
 function NumberObject(value, order, selected) {
     this.value = parseInt(value);
     this.order = order;
@@ -62,15 +62,7 @@ function createLevelBar(ctn,allLevels,level, start_index) {
     }
 }
 
-function updateInfo() {
-    ctn = $('.level_btn.selected');
-    level = ctn.attr('value');
-    lev_info = ctn.attr('info');
-    lev_title = ctn.attr('title');
-    $('#info_display').attr('data-content', lev_info);
-    $('#info_display').attr('data-original-title', lev_title);
-    $('#display_level').text('Level: '+lev_title + ' ');
-}
+
 
 function hintShow(hintTimer) {
     var hint_b = $('#hint_sol');
@@ -117,16 +109,17 @@ function isValid(c) {
 // Wait till the browser is ready to render the game.
 $(document).ready(function () {
 
+    // Chrono
     function startChrono() {
         if (typeof (Worker) !== "undefined") {
             if (typeof (w) == "undefined") {
                 w = new Worker("./js/timer.js");
             }
             w.onmessage = function (event) {
-                document.getElementById("current_score").innerHTML = event.data;
+                $('#current_score').text(event.data);
             };
         } else {
-            document.getElementById("current_score").innerHTML = "NA";
+            $('#current_score').text("NA");
         }
     }
 
@@ -137,57 +130,11 @@ $(document).ready(function () {
         }
     }
 
-    function initGame(gameHandler) {
-        numbers = gameHandler.Numbers;
-        target = gameHandler.target;
-        ops = gameHandler.operations;
-        hintList = gameHandler.hintList;
-        bestSolution = gameHandler.bestSolution;
-        mustUseAll = gameHandler.mustUseAll;
-        timer = 5;
-
-        numSet = initSet(numbers);
-        $('#display_target').text("Make " + target);
-        actuateScreen(numSet);
-        actuateOperands(ops);
-        var ctn_play = $('#play_icon_container');
-        ctn_play.empty()
-        if (challengeStatus) {
-            document.getElementById("total_score").innerHTML = totalScore;
-            stopChrono();
-            startChrono();
-        } else {
-            ctn_play.append('<span id="play_icon" class="glyphicon glyphicon-expand center-block"></span>')
-        }
-        updateInfo();
-        hintsGiven = 0;
-        $('#display_hint').text("  ");
-        hintTimer = timer * 1000;
-        hintShow(hintTimer);
-    };
-    
-    function startChallenge() {
-        challengeStatus = true;
-        gamesPlayed = 0;
-        totalScore = 0;
-        highScore = parseInt(getHighScore(sLevel));
-        document.getElementById("high_score").innerHTML = highScore;
-    }
-    function endChallenge() {
-        challengeStatus = false;
-        gamesPlayed = 0;
-        // update high score
-        if (totalScore > highScore) {
-            setHighScore(sLevel, totalScore);
-            alert("You beat the High Score!");
-        }
-        totalScore = 0;
-
-    }
+    //Score management
     function updateScore() {
         stopChrono();
-        totalScore = totalScore + parseInt(document.getElementById("current_score").innerHTML)
-        document.getElementById("total_score").innerHTML = totalScore;
+        totalScore = totalScore + parseInt($('#current_score').text())
+        $('#total_score').text(totalScore);
     }
 
     function getHighScore(gameLevel) {
@@ -206,13 +153,60 @@ $(document).ready(function () {
         localStorage.setItem(key,score);
     }
 
+    //Individual game
+    function initGame(gameHandler) {
+        numbers = gameHandler.Numbers;
+        target = gameHandler.target;
+        ops = gameHandler.operations;
+        hintList = gameHandler.hintList;
+        bestSolution = gameHandler.bestSolution;
+        mustUseAll = gameHandler.mustUseAll;
+        timer = 20;
+
+        numSet = initSet(numbers);
+        $('#display_target').text("Make " + target);
+        actuateScreen(numSet);
+        actuateOperands(ops);
+        var ctn_play = $('#play_icon_container');
+        ctn_play.empty();
+        if (challengeStatus) {
+            stopChrono();
+            startChrono();
+        } else {
+            ctn_play.append('<span id="play_icon" class="glyphicon glyphicon-expand center-block"></span>')
+        }
+        updateInfo();
+        hintsGiven = 0;
+        $('#display_hint').text("  ");
+        hintTimer = timer * 1000;
+        hintShow(hintTimer);
+    };
+
+    function endGameChallenge() {
+        currentScore=parseInt($('#current_score').text());
+        updateScore();
+        gamesPlayed++;
+        alert("Game "+gamesPlayed+" solved! +"+currentScore+" points");
+        //and update score
+        if (gamesPlayed >= numGamesChallenge) {
+            endChallenge(); // update highscore and back to casual game state
+        }
+        else {
+            gameHandler = new GameHandler(sLevel.size, sLevel.min_number, sLevel.max_number, sLevel.ops,
+                                sLevel.tgt_min, sLevel.tgt_max, sLevel.tgt_step, sLevel.hasExactSol, sLevel.mustUseAll, sLevel.CGTarget);
+            initGame(gameHandler);
+        }
+    }
+
     function testEndGame(nSet, currentValue, mustUseAll, bestSolution) {
         if (nSet.length === 1) {
             if (nSet[0].value === bestSolution[0] || nSet[0].value === bestSolution[1]) {
                 if (challengeStatus) {
-                    updateScore();
+                    endGameChallenge();
                 }
-                $('#winModal').modal('show');
+                else {
+                    $('#winModal').modal('show');
+                }
             }
             else {
                 $('#loseModal').modal('show');
@@ -221,12 +215,58 @@ $(document).ready(function () {
         else {
             if (!mustUseAll && (currentValue === bestSolution[0] || currentValue === bestSolution[1])) {
                 if (challengeStatus) {
-                    updateScore();
+                    endGameChallenge();
                 }
-                $('#winModal').modal('show');
+                else {
+                    $('#winModal').modal('show');
+                }
             }
         }
     };
+
+    //Challenge
+    function startChallenge() {
+        challengeStatus = true;
+        gamesPlayed = 0;
+        totalScore = 0;
+        highScore = parseInt(getHighScore(sLevel));
+        $('#high_score').text(highScore);
+        $('#total_score').text(totalScore);
+
+    }
+
+    function endChallenge() {
+        challengeStatus = false;
+        stopChrono();
+        gamesPlayed = 0;
+        beatHS=".";
+        // update high score
+        if (totalScore > highScore) {
+            setHighScore(sLevel, totalScore);
+            highScore = totalScore;
+            beatHS=" and beat the High Score!";
+        }
+        alert("You got "+totalScore +" points" + beatHS);
+        totalScore = 0;
+        $('#current_score').text('-');
+        var ctn_play = $('#play_icon_container');
+        ctn_play.empty();
+        ctn_play.append('<span id="play_icon" class="glyphicon glyphicon-expand center-block"></span>')
+    }
+
+    function updateInfo() {
+        ctn = $('.level_btn.selected');
+        level = ctn.attr('value');
+        lev_info = ctn.attr('info');
+        lev_title = ctn.attr('title');
+        $('#info_display').attr('data-content', lev_info);
+        $('#info_display').attr('data-original-title', lev_title);
+        $('#display_level').text('Level: ' + lev_title + ' ');
+        sLevel = allLevels[level];
+        highScore = parseInt(getHighScore(sLevel));
+        $('#total_score').text('-');
+        $('#high_score').text(highScore);
+    }
 
     var very_easyLevel = new GameLevel("Add and hop", 4, 0, 9, "+", 1, 9, 1, true, false, false);
     var very_easyadvancedLevel = new GameLevel("Add more", 5, 0, 9, "+", 1, 20, 1, true, false, false);
@@ -313,9 +353,11 @@ $(document).ready(function () {
     });
 
     $(document).on('click', '.level_btn', function () {
-        $('.level_btn').removeClass('selected');
-        $(this).addClass('selected');
-        updateInfo();
+        if (!challengeStatus) {
+            $('.level_btn').removeClass('selected');
+            $(this).addClass('selected');
+            updateInfo();
+        }
     });
 
     $(document).on('click', '.retry', function () {
@@ -333,7 +375,7 @@ $(document).ready(function () {
                             sLevel.tgt_min, sLevel.tgt_max, sLevel.tgt_step, sLevel.hasExactSol, sLevel.mustUseAll, sLevel.CGTarget);
         if (challengeStatus) {
             gamesPlayed++;
-            //and update score
+            alert("Game "+ gamesPlayed +" skipped.");
             if (gamesPlayed >= numGamesChallenge) {
                 endChallenge(); // update highscore and back to casual game state
             }
