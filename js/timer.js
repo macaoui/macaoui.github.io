@@ -1,14 +1,18 @@
 // Timer web worker
 
-var gameTimer = 10;
 var gameTimerStep = 10;
-var tt = gameTimer * gameTimerStep + 1;
 
-function timedCount() {
+function timedCount(timer,gameTimer) {
+    tt= parseInt(timer)
     tt=Math.max(0,tt-1)
-    current_score = Math.ceil(tt / gameTimerStep);
+    current_score = Math.ceil(tt / gameTimer);
     postMessage(current_score);
-    setTimeout("timedCount()", 1000);
+    setTimeout("timedCount("+tt+","+gameTimer+")", 1000);
 }
 
-timedCount();
+onmessage = function (e) {
+    gameTimer = parseInt(e.data);
+    init_time=gameTimer * gameTimerStep + 1;
+    timedCount(init_time,gameTimer);
+
+}

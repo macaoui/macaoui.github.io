@@ -1,4 +1,4 @@
-function GameLevel(lname, size, min_number, max_number, ops, tgt_min, tgt_max, tgt_step, hasExactSol, mustUseAll, canGenerateTarget) {
+function GameLevel(lname, size, min_number, max_number, ops, tgt_min, tgt_max, tgt_step, hasExactSol, mustUseAll, canGenerateTarget, timer) {
     this.lname = lname;
     this.size = size;
     this.ops = ops;
@@ -10,6 +10,7 @@ function GameLevel(lname, size, min_number, max_number, ops, tgt_min, tgt_max, t
     this.hasExactSol = hasExactSol;
     this.mustUseAll = mustUseAll;
     this.CGTarget = canGenerateTarget;
+    this.timer = timer;
 }
 
 function GameHandler(size, min_number, max_number, ops, tgt_min, tgt_max, tgt_step, hasExactSol, mustUseAll, canGenerateTarget) {

@@ -64,17 +64,6 @@ function createLevelBar(ctn,allLevels,level, start_index) {
 
 
 
-function hintShow(hintTimer) {
-    var hint_b = $('#hint_sol');
-    hint_b.fadeOut();
-    setTimeout(displayHint, hintTimer)
-};
-
-function displayHint() {
-    var hint_b = $('#hint_sol');
-    hint_b.fadeIn(3000);
-}
-
 function operate(a, b, oper) {
     switch (oper) {
         case "+":
@@ -103,9 +92,6 @@ function isValid(c) {
 };
 
 
-
-
-
 // Wait till the browser is ready to render the game.
 $(document).ready(function () {
 
@@ -114,6 +100,7 @@ $(document).ready(function () {
         if (typeof (Worker) !== "undefined") {
             if (typeof (w) == "undefined") {
                 w = new Worker("./js/timer.js");
+                w.postMessage(sLevel.timer);
             }
             w.onmessage = function (event) {
                 $('#current_score').text(event.data);
@@ -128,6 +115,19 @@ $(document).ready(function () {
             w.terminate();
             w = undefined;
         }
+    }
+
+    //Hint timer
+    function hintShow(hintTimer) {
+        var hint_b = $('#hint_sol');
+        hint_b.fadeOut();
+        clearTimeout(hintTimeout);
+        hintTimeout=setTimeout(displayHint, hintTimer)
+    };
+
+    function displayHint() {
+        var hint_b = $('#hint_sol');
+        hint_b.fadeIn(3000);
     }
 
     //Score management
@@ -161,7 +161,6 @@ $(document).ready(function () {
         hintList = gameHandler.hintList;
         bestSolution = gameHandler.bestSolution;
         mustUseAll = gameHandler.mustUseAll;
-        timer = 20;
 
         numSet = initSet(numbers);
         $('#display_target').text("Make " + target);
@@ -178,7 +177,7 @@ $(document).ready(function () {
         updateInfo();
         hintsGiven = 0;
         $('#display_hint').text("  ");
-        hintTimer = timer * 1000;
+        hintTimer = sLevel.timer * 1000 *2;
         hintShow(hintTimer);
     };
 
@@ -186,7 +185,13 @@ $(document).ready(function () {
         currentScore=parseInt($('#current_score').text());
         updateScore();
         gamesPlayed++;
-        alert("Game "+gamesPlayed+" solved! +"+currentScore+" points");
+        // alert("Game "+gamesPlayed+" solved! +"+currentScore+" points");
+        msg = "+" + currentScore;
+        $('#tt_success').attr('data-original-title', msg);
+        $('#tt_success').tooltip("show");
+        setTimeout(function () {
+            $('#tt_success').tooltip("hide");
+        }, 1000);
         //and update score
         if (gamesPlayed >= numGamesChallenge) {
             endChallenge(); // update highscore and back to casual game state
@@ -244,10 +249,18 @@ $(document).ready(function () {
         if (totalScore > highScore) {
             setHighScore(sLevel, totalScore);
             highScore = totalScore;
-            beatHS=" and beat the High Score!";
+            beatHS="Best Score!";
         }
-        alert("You got "+totalScore +" points" + beatHS);
+        // alert("You got "+totalScore +" points" + beatHS);
+        msg = totalScore + " points. " + beatHS;
+        $('#tt_end').attr('data-original-title', msg);
+        $('#tt_end').tooltip("show");
+        setTimeout(function () {
+            $('#tt_end').tooltip("hide");
+        }, 10000);
         totalScore = 0;
+        $('#high_score').text(highScore);
+        $('#total_score').text('-');
         $('#current_score').text('-');
         var ctn_play = $('#play_icon_container');
         ctn_play.empty();
@@ -264,20 +277,19 @@ $(document).ready(function () {
         $('#display_level').text('Level: ' + lev_title + ' ');
         sLevel = allLevels[level];
         highScore = parseInt(getHighScore(sLevel));
-        $('#total_score').text('-');
         $('#high_score').text(highScore);
     }
 
-    var very_easyLevel = new GameLevel("Add and hop", 4, 0, 9, "+", 1, 9, 1, true, false, false);
-    var very_easyadvancedLevel = new GameLevel("Add more", 5, 0, 9, "+", 1, 20, 1, true, false, false);
-    var easyLevel = new GameLevel("Plus and minus", 4, 0, 9, "+-", 1, 9, 1, true, false, false);
-    var minusLevel = new GameLevel("The Strange Mr Minus", 6, 0, 9, "-", 0, 9, 1, true, true, true);
-    var easyadvancedLevel = new GameLevel("Plus and minus - Advanced", 6, 0, 9, "+-", 1, 9, 1, true, true, true);
-    var mediumLevel = new GameLevel("Medium", 4, 1, 9, "+-x", 4, 48, 4, true, true, true);
-    var mediumadvancedLevel = new GameLevel("Medium Challenging", 5, 1, 9, "+-x", 3, 99, 3, false, true, true);
-    var twentyfourLevel = new GameLevel("Make 24", 4, 1, 10, "+-x/", 24, 24, 1, true, true, true);
-    var hardLevel = new GameLevel("Challenging", 4, 1, 10, "+-x/", 6, 72, 6, false, true, true);
-    var very_hardLevel = new GameLevel("Ultimate", 5, 1, 10, "+-x/", 12, 240, 2, false, true, true);
+    var very_easyLevel = new GameLevel("Add and hop", 4, 0, 9, "+", 1, 9, 1, true, false, false,5);
+    var very_easyadvancedLevel = new GameLevel("Add more", 5, 0, 9, "+", 1, 20, 1, true, false, false,5);
+    var easyLevel = new GameLevel("Plus and minus", 4, 0, 9, "+-", 1, 9, 1, true, false, false,5);
+    var minusLevel = new GameLevel("The Strange Mr Minus", 6, 0, 9, "-", 0, 9, 1, true, true, true,5);
+    var easyadvancedLevel = new GameLevel("Plus and minus - Advanced", 6, 0, 9, "+-", 1, 9, 1, true, true, true,5);
+    var mediumLevel = new GameLevel("Medium", 4, 1, 9, "+-x", 4, 48, 4, true, true, true,10);
+    var mediumadvancedLevel = new GameLevel("Medium Challenging", 5, 1, 9, "+-x", 3, 99, 3, false, true, true,10);
+    var twentyfourLevel = new GameLevel("Make 24", 4, 1, 10, "+-x/", 24, 24, 1, true, true, true,10);
+    var hardLevel = new GameLevel("Challenging", 4, 1, 10, "+-x/", 6, 72, 6, false, true, true,10);
+    var very_hardLevel = new GameLevel("Ultimate", 5, 1, 10, "+-x/", 12, 240, 2, false, true, true,10);
     var allLevels = [];
     allLevels.push(very_easyLevel, very_easyadvancedLevel, easyLevel, minusLevel, easyadvancedLevel, mediumLevel, mediumadvancedLevel,
                     twentyfourLevel, hardLevel, very_hardLevel);
@@ -295,10 +307,12 @@ $(document).ready(function () {
     var totalScore = 0;
     var highScore = 0;
     var w;
+    var hintTimeout;
 
     initGame(gameHandler);
 
     $('[data-toggle="popover"]').popover();
+    $('[data-toggle="tooltip"]').tooltip();
 
     //click on number
     $(document).on('click', '.number', function () {
@@ -375,7 +389,11 @@ $(document).ready(function () {
                             sLevel.tgt_min, sLevel.tgt_max, sLevel.tgt_step, sLevel.hasExactSol, sLevel.mustUseAll, sLevel.CGTarget);
         if (challengeStatus) {
             gamesPlayed++;
-            alert("Game "+ gamesPlayed +" skipped.");
+           // alert("Game " + gamesPlayed + " skipped.");
+            $('#tt_skip').tooltip("show");
+            setTimeout(function () {
+                $('#tt_skip').tooltip("hide");
+            }, 1000);
             if (gamesPlayed >= numGamesChallenge) {
                 endChallenge(); // update highscore and back to casual game state
             }
