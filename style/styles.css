@@ -5,11 +5,11 @@
   }
 
   #numbers_container {
-    margin-top: 30px;
+    margin-top: 25px;
 }
 
 #operands_container {
-    margin-top: 30px;
+    margin-top: 25px;
 }
 
 .display_level_container {
@@ -54,8 +54,12 @@
 
 #display_hint {
 margin: auto;
-margin-top: 15px;
+margin-top: 10px;
 color: indianred;
+}
+
+.modal_play_text {
+margin-top: 8px;
 }
 
 #retry_text {
@@ -89,7 +93,7 @@ color: indianred;
   
  .select_container {
     padding:0;
-    margin: 20px 26% 0px 26%;
+    margin: 15px 26% 0px 26%;
     width:49%;
 }
 
@@ -107,7 +111,7 @@ color: indianred;
 }
 
 h3 {
-  color: #776e65;    
+  color: #1f2f8a;    
   font-family: Verdana;
   font-size: 20px;
   font-weight: bold;
@@ -133,13 +137,13 @@ h3 {
 }
 
 #restart {
-    margin-top: 60px;
+    margin-top: 50px;
 }
 
 
 
 #hint_sol {
-    margin-top: 40px;
+    margin-top: 25px;
     display: none;
     justify-content: center;
     text-align: center;
@@ -153,6 +157,10 @@ h3 {
 
 #cur_score::after {
     content: "Timer";
+}
+
+#current_score {
+    color:orangered;
 }
 
 #tot_score::after {
