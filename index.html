@@ -133,114 +133,117 @@ SOFTWARE.
                             <button type="button" class="close" data-dismiss="modal">&times;</button>
                         </div>
                         <div class="modal-body">
-                            <div id="casual_text" class="">
-                                <b>Casual Play</b> <br>
+                            <div class="container wrap">
+                                <button type="button" class="outline center btn btn-round btn-success btn-new" data-dismiss="modal"> Casual Game </button>
+                                <br />
                                 <small>No chrono, no score.</small>
                             </div>
                             <hr />
-                            <div id="challenge_text" class="">
-                                <b>Go Challenge</b> <br>
+                            <div class="container wrap">
+                                <button type="button" class="outline center btn btn-round btn-danger" id="start_challenge" data-dismiss="modal"> Challenge ! </button>
+                                <br />
                                 <small>10 games chrono</small>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
+        </div>
 
-            <!-- Modal Win -->
-            <div class="modal fade" id="winModal" role="dialog">
-                <div class="modal-dialog">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <button type="button" class="close" data-dismiss="modal">&times;</button>
-                        </div>
-                        <div class="modal-body">
-                            <div id="win_text" class="display_text"><strong>Well done</strong>, you solved this puzzle!!!</div>
-                        </div>
-                        <div class="modal-footer">
-                            <div class="container wrap">
-                                <button type="button" class="btn round btn-success outline center-block btn-new" data-dismiss="modal"> New Game </button>
-                            </div>
+        <!-- Modal Win -->
+        <div class="modal fade" id="winModal" role="dialog">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    </div>
+                    <div class="modal-body">
+                        <div id="win_text" class="display_text"><strong>Well done</strong>, you solved this puzzle!!!</div>
+                    </div>
+                    <div class="modal-footer">
+                        <div class="container wrap">
+                            <button type="button" class="btn round btn-success outline center-block btn-new" data-dismiss="modal"> New Game </button>
                         </div>
                     </div>
-                </div>
-            </div>
-
-            <!-- Modal Lose -->
-            <div class="modal fade" id="loseModal" role="dialog">
-                <div class="modal-dialog">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <button type="button" class="close" data-dismiss="modal">&times;</button>
-                        </div>
-                        <div class="modal-body">
-                            <div id="retry_text" class="display_text">Sorry, please <strong>try again</strong></div>
-                        </div>
-                        <div class="modal-footer">
-                            <div class="container wrap">
-                                <button type="button" class="btn round btn-warning outline center-block retry" data-dismiss="modal"> Retry </button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="container">
-                <div id="score_container">
-                    <div class="score" id="cur_score">
-                        <output id="current_score">-</output>
-                    </div>
-                    <div class="score" id="tot_score">
-                        <output id="total_score">-</output>
-                        <div id="tt_success" data-toggle="tooltip" data-placement="bottom" title=""></div>
-                        <div id="tt_skip" data-toggle="tooltip" data-placement="bottom" title="+ 0"></div>
-                        <div id="tt_end" data-toggle="tooltip" data-placement="bottom" title=""></div>
-                    </div>
-                    <div class="score" id="hi_score"><output id="high_score"></output></div>
-                </div>
-                <h3 id="display_target">Make 32</h3>
-
-
-                <div id="numbers_container" class="container text-center">
-                    <button type="button" class="btn round raised btn-primary number">1</button>
-                    <button type="button" class="btn round raised btn-primary number">2</button>
-                    <button type="button" class="btn round raised btn-primary number">3</button>
-                    <button type="button" class="btn round raised btn-primary number">4</button>
-                </div>
-                <div id="operands_container" class="container text-center">
-                    <button type="button" class="btn btn-info operand">+</button>
-                    <button type="button" class="btn btn-info operand">-</button>
-                    <button type="button" class="btn btn-info operand">x</button>
-                    <button type="button" class="btn btn-info operand">/</button>
-                </div>
-
-                <div id="restart" class="container">
-                    <div class="container text-center">
-                        <button type="button" id="try_again" class="btn round btn-warning outline retry"> Try Again </button>
-                        <button type="button" class="btn round btn-success outline btn-new"> Next </button>
-                    </div>
-                    <div class="container text-center">
-                        <div id="select_container" class="btn-group btn-group-justified select_container" role="group">
-                        </div>
-                        <div id="select_container2" class="btn-group btn-group-justified select_container" role="group">
-                        </div>
-                    </div>
-
-                </div>
-                <div id="display_level_container" class="display_level_container wrap">
-                    <div id="display_level" class="display_text center-block">Level: </div>
-                    <span id="info_display" class="glyphicon glyphicon-info-sign center-block"
-                          data-toggle="popover" data-content="" data-html="true" data-placement="bottom"></span>
-                    <div id="play_icon_container">
-                        <span id="play_icon" class="glyphicon glyphicon-expand center-block"></span>
-                    </div>
-                </div>
-                <div id="display_hint" class="display_text"></div>
-                <div id="hint_sol" class="container text-center">
-                    <button type="button" id="hint" class="btn round btn-danger outline">Hint</button>
                 </div>
             </div>
         </div>
+
+        <!-- Modal Lose -->
+        <div class="modal fade" id="loseModal" role="dialog">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    </div>
+                    <div class="modal-body">
+                        <div id="retry_text" class="display_text">Sorry, please <strong>try again</strong></div>
+                    </div>
+                    <div class="modal-footer">
+                        <div class="container wrap">
+                            <button type="button" class="btn round btn-warning outline center-block retry" data-dismiss="modal"> Retry </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="container">
+            <div id="score_container">
+                <div class="score" id="cur_score">
+                    <output id="current_score">-</output>
+                </div>
+                <div class="score" id="tot_score">
+                    <output id="total_score">-</output>
+                    <div id="tt_success" data-toggle="tooltip" data-placement="bottom" title=""></div>
+                    <div id="tt_skip" data-toggle="tooltip" data-placement="bottom" title="+ 0"></div>
+                    <div id="tt_end" data-toggle="tooltip" data-placement="bottom" title=""></div>
+                </div>
+                <div class="score" id="hi_score"><output id="high_score"></output></div>
+            </div>
+            <h3 id="display_target">Make 32</h3>
+
+
+            <div id="numbers_container" class="container text-center">
+                <button type="button" class="btn round raised btn-primary number">1</button>
+                <button type="button" class="btn round raised btn-primary number">2</button>
+                <button type="button" class="btn round raised btn-primary number">3</button>
+                <button type="button" class="btn round raised btn-primary number">4</button>
+            </div>
+            <div id="operands_container" class="container text-center">
+                <button type="button" class="btn btn-info operand">+</button>
+                <button type="button" class="btn btn-info operand">-</button>
+                <button type="button" class="btn btn-info operand">x</button>
+                <button type="button" class="btn btn-info operand">/</button>
+            </div>
+
+            <div id="restart" class="container">
+                <div class="container text-center">
+                    <button type="button" id="try_again" class="btn round btn-warning outline retry"> Try Again </button>
+                    <button type="button" class="btn round btn-success outline btn-new"> Next </button>
+                </div>
+                <div class="container text-center">
+                    <div id="select_container" class="btn-group btn-group-justified select_container" role="group">
+                    </div>
+                    <div id="select_container2" class="btn-group btn-group-justified select_container" role="group">
+                    </div>
+                </div>
+
+            </div>
+            <div id="display_level_container" class="display_level_container wrap">
+                <div id="display_level" class="display_text center-block">Level: </div>
+                <span id="info_display" class="glyphicon glyphicon-info-sign center-block"
+                      data-toggle="popover" data-content="" data-html="true" data-placement="bottom"></span>
+                <div id="play_icon_container">
+                    <span id="play_icon" class="glyphicon glyphicon-expand center-block"></span>
+                </div>
+            </div>
+            <div id="display_hint" class="display_text"></div>
+            <div id="hint_sol" class="container text-center">
+                <button type="button" id="hint" class="btn round btn-danger outline">Hint</button>
+            </div>
+        </div>
+    </div>
     </div> <!-- /container -->
 
 </body>

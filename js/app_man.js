@@ -127,7 +127,7 @@ $(document).ready(function () {
 
     function displayHint() {
         var hint_b = $('#hint_sol');
-        hint_b.fadeIn(3000);
+        hint_b.fadeIn(1500);
     }
 
     //Score management
@@ -244,7 +244,7 @@ $(document).ready(function () {
         challengeStatus = false;
         stopChrono();
         gamesPlayed = 0;
-        beatHS=".";
+        beatHS="";
         // update high score
         if (totalScore > highScore) {
             setHighScore(sLevel, totalScore);
@@ -383,13 +383,14 @@ $(document).ready(function () {
     });
 
     $(document).on('click', '.btn-new', function () {
+        $('#playModal').modal('hide');
         level = $('.level_btn.selected').attr('value');
         sLevel = allLevels[level];
         gameHandler = new GameHandler(sLevel.size, sLevel.min_number, sLevel.max_number, sLevel.ops,
                             sLevel.tgt_min, sLevel.tgt_max, sLevel.tgt_step, sLevel.hasExactSol, sLevel.mustUseAll, sLevel.CGTarget);
         if (challengeStatus) {
             gamesPlayed++;
-           // alert("Game " + gamesPlayed + " skipped.");
+           // alert("Game skipped.");
             $('#tt_skip').tooltip("show");
             setTimeout(function () {
                 $('#tt_skip').tooltip("hide");
@@ -422,16 +423,7 @@ $(document).ready(function () {
         $('#playModal').modal('show');
     })
 
-    $(document).on('click', '#casual_text', function () {
-        $('#playModal').modal('hide');
-        level = $('.level_btn.selected').attr('value');
-        sLevel = allLevels[level];
-        gameHandler = new GameHandler(sLevel.size, sLevel.min_number, sLevel.max_number, sLevel.ops,
-                            sLevel.tgt_min, sLevel.tgt_max, sLevel.tgt_step, sLevel.hasExactSol, sLevel.mustUseAll, sLevel.CGTarget);
-        initGame(gameHandler);
-    })
-
-    $(document).on('click', '#challenge_text', function () {
+    $(document).on('click', '#start_challenge', function () {
         $('#playModal').modal('hide');
         level = $('.level_btn.selected').attr('value');
         sLevel = allLevels[level];
