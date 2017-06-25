@@ -171,8 +171,11 @@ $(document).ready(function () {
         if (challengeStatus) {
             stopChrono();
             startChrono();
+            $('#play_icon').hide();
+            $('#skip_btn').show();
         } else {
-            ctn_play.append('<span id="play_icon" class="glyphicon glyphicon-expand center-block"></span>')
+            $('#skip_btn').hide();
+            $('#play_icon').show();
         }
         updateInfo();
         hintsGiven = 0;

@@ -134,13 +134,13 @@ SOFTWARE.
                         </div>
                         <div class="modal-body">
                             <div class="container wrap">
-                                <button type="button" class="outline center btn btn-round btn-success btn-new" data-dismiss="modal"> Casual Game </button>
+                                <button type="button" class="outline center btn round btn-success btn-new" data-dismiss="modal"> Casual Game </button>
                                 <br />
                                 <small>No chrono, no score.</small>
                             </div>
                             <hr />
                             <div class="container wrap">
-                                <button type="button" class="outline center btn btn-round btn-danger" id="start_challenge" data-dismiss="modal"> Challenge ! </button>
+                                <button type="button" class="outline center btn round btn-danger" id="start_challenge" data-dismiss="modal"> Challenge ! </button>
                                 <br />
                                 <small>10 games chrono</small>
                             </div>
@@ -162,7 +162,7 @@ SOFTWARE.
                     </div>
                     <div class="modal-footer">
                         <div class="container wrap">
-                            <button type="button" class="btn round btn-success outline center-block btn-new" data-dismiss="modal"> New Game </button>
+                            <button type="button" class="btn round btn-success outline center-block btn-new" data-dismiss="modal"> Next </button>
                         </div>
                     </div>
                 </div>
@@ -218,9 +218,10 @@ SOFTWARE.
             </div>
 
             <div id="restart" class="container">
-                <div class="container text-center">
-                    <button type="button" id="try_again" class="btn round btn-warning outline retry"> Try Again </button>
-                    <button type="button" class="btn round btn-success outline btn-new"> Next </button>
+                <div class="container text-center" id="play_buttons">
+                    <button type="button" id="try_again" class="btn btn-small round btn-warning outline retry"> Retry </button>
+                    <button type="button" id="play_icon" class="btn btn-small round btn-success outline"> New Game </button>
+                    <button type="button" id="skip_btn" class="btn btn-small round btn-danger outline btn-new"> Skip </button>
                 </div>
                 <div class="container text-center">
                     <div id="select_container" class="btn-group btn-group-justified select_container" role="group">
@@ -234,9 +235,6 @@ SOFTWARE.
                 <div id="display_level" class="display_text center-block">Level: </div>
                 <span id="info_display" class="glyphicon glyphicon-info-sign center-block"
                       data-toggle="popover" data-content="" data-html="true" data-placement="bottom"></span>
-                <div id="play_icon_container">
-                    <span id="play_icon" class="glyphicon glyphicon-expand center-block"></span>
-                </div>
             </div>
             <div id="display_hint" class="display_text"></div>
             <div id="hint_sol" class="container text-center">
