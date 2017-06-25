@@ -263,8 +263,8 @@ $(document).ready(function () {
         }, 10000);
         totalScore = 0;
         $('#high_score').text(highScore);
-        $('#total_score').text('-');
-        $('#current_score').text('-');
+        $('#total_score').text('');
+        $('#current_score').text('');
         var ctn_play = $('#play_icon_container');
         ctn_play.empty();
         ctn_play.append('<span id="play_icon" class="glyphicon glyphicon-expand center-block"></span>')
@@ -283,19 +283,21 @@ $(document).ready(function () {
         $('#high_score').text(highScore);
     }
 
-    var very_easyLevel = new GameLevel("Add and hop", 4, 0, 9, "+", 1, 9, 1, true, false, false,5);
-    var very_easyadvancedLevel = new GameLevel("Add more", 5, 0, 9, "+", 1, 20, 1, true, false, false,5);
+    var addLevel = new GameLevel("Easy Add", 4, 0, 9, "+", 1, 9, 1, true, false, false,5);
     var easyLevel = new GameLevel("Plus and minus", 4, 0, 9, "+-", 1, 9, 1, true, false, false,5);
-    var minusLevel = new GameLevel("The Strange Mr Minus", 6, 0, 9, "-", 0, 9, 1, true, true, true,5);
-    var easyadvancedLevel = new GameLevel("Plus and minus - Advanced", 6, 0, 9, "+-", 1, 9, 1, true, true, true,5);
-    var mediumLevel = new GameLevel("Medium", 4, 1, 9, "+-x", 4, 48, 4, true, true, true,10);
-    var mediumadvancedLevel = new GameLevel("Medium Challenging", 5, 1, 9, "+-x", 3, 99, 3, false, true, true,10);
+    var minusLevel = new GameLevel("Strange Minus", 6, 0, 9, "-", 0, 9, 1, true, true, true,5);
+    var easyadvancedLevel = new GameLevel("Plus and minus 2", 6, 0, 9, "+-", 1, 9, 1, true, true, true, 5);
+    var plusmultLevel = new GameLevel("Add and multiply", 4, 1, 9, "+x", 4, 96, 4, true, true, true, 10);
+    var minusmultLevel = new GameLevel("Minus and multiply", 4, 1, 9, "-x", 2, 24, 2, true, true, true, 10);
+    var mediumLevel = new GameLevel("Medium", 4, 1, 9, "+-x", 4, 48, 4, true, true, true, 10);
+    var divideLevel = new GameLevel("Divide and conquer", 5, 1, 9, "+x/", 1, 9, 1, true, true, true, 10);
+ //   var mediumadvancedLevel = new GameLevel("Medium Challenging", 5, 1, 9, "+-x", 3, 99, 3, false, true, true,10);
     var twentyfourLevel = new GameLevel("Make 24", 4, 1, 10, "+-x/", 24, 24, 1, true, true, true,10);
-    var hardLevel = new GameLevel("Challenging", 4, 1, 10, "+-x/", 6, 72, 6, false, true, true,10);
-    var very_hardLevel = new GameLevel("Ultimate", 5, 1, 10, "+-x/", 12, 240, 2, false, true, true,10);
+    var challengingLevel = new GameLevel("Challenging", 4, 1, 10, "+-x/", 1, 99, 1, false, true, true,10);
+ //   var very_hardLevel = new GameLevel("Ultimate", 5, 1, 10, "+-x/", 12, 240, 2, false, true, true,10);
     var allLevels = [];
-    allLevels.push(very_easyLevel, very_easyadvancedLevel, easyLevel, minusLevel, easyadvancedLevel, mediumLevel, mediumadvancedLevel,
-                    twentyfourLevel, hardLevel, very_hardLevel);
+    allLevels.push(addLevel, easyLevel, minusLevel, easyadvancedLevel, plusmultLevel, minusmultLevel,
+        mediumLevel, divideLevel,twentyfourLevel, challengingLevel);
     var level = 2;
     var sLevel = allLevels[level];
     var gameHandler = new GameHandler(sLevel.size, sLevel.min_number, sLevel.max_number, sLevel.ops,
