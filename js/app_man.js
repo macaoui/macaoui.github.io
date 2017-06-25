@@ -263,8 +263,8 @@ $(document).ready(function () {
         }, 10000);
         totalScore = 0;
         $('#high_score').text(highScore);
-        $('#total_score').text(' ');
-        $('#current_score').text(' ');
+        $('#total_score').text('_');
+        $('#current_score').text('_');
         var ctn_play = $('#play_icon_container');
         ctn_play.empty();
         ctn_play.append('<span id="play_icon" class="glyphicon glyphicon-expand center-block"></span>')
