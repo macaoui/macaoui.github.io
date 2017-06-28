@@ -1,7 +1,22 @@
-function GameLevel(lname, size, min_number, max_number, ops, tgt_min, tgt_max, tgt_step, hasExactSol, mustUseAll, canGenerateTarget, timer) {
+function string2readable(str, sep, sep2) {
+    if (str.length < 2) {
+        return str;
+    }
+    else {
+        str_1 = str.substring(0, str.length - 1);
+        output = str_1.split("").join(sep);
+        return output + " " + sep2 + " " + str.charAt(str.length - 1);
+    }
+}
+
+function GameLevel(lname, size, min_number, max_number, ops, tgt_min, tgt_max, tgt_step, hasExactSol, mustUseAll, canGenerateTarget, timer, last_ops) {
     this.lname = lname;
     this.size = size;
     this.ops = ops;
+    this.last_ops = last_ops;
+    if (last_ops.length == 0) {
+        this.last_ops = ops;
+    }
     this.min_number = min_number;
     this.max_number = max_number;
     this.tgt_min = tgt_min;
@@ -13,7 +28,7 @@ function GameLevel(lname, size, min_number, max_number, ops, tgt_min, tgt_max, t
     this.timer = timer;
 }
 
-function GameHandler(size, min_number, max_number, ops, tgt_min, tgt_max, tgt_step, hasExactSol, mustUseAll, canGenerateTarget) {
+function GameHandler(size, min_number, max_number, ops, tgt_min, tgt_max, tgt_step, hasExactSol, mustUseAll, canGenerateTarget, last_ops) {
     this.min_target = tgt_min;
     this.max_target = tgt_max;
     this.step_target = tgt_step;
@@ -27,6 +42,7 @@ function GameHandler(size, min_number, max_number, ops, tgt_min, tgt_max, tgt_st
     this.Numbers = new Array(size);
     this.objNumbers = new Array(size);
     this.operations = ops.toString().split("");
+    this.lastOperations = last_ops.toString().split("");
     this.foundSol = false;
     this.bestSolution = new Array();
     this.listOfSolutions = new Array();
@@ -197,15 +213,19 @@ GameHandler.prototype.findSolution = function (objNum, tgt, mustUseAll) {
                             }
                         }
                         //  perform each possible operation
-                        for (var l = 0; l < this.operations.length; l++) {
-                            newVal = this.operate(a, b, this.operations[l]);
+                        var operArray = this.operations;
+                        if (n === 2) {
+                            operArray = this.lastOperations;
+                        }
+                        for (var l = 0; l < operArray.length; l++) {
+                            newVal = this.operate(a, b, operArray[l]);
 
                             if (this.isValid(newVal)) {
-                                newCalcul = (n === 2) ? ca + this.operations[l] + cb : '(' + ca + this.operations[l] + cb + ')';
+                                newCalcul = (n === 2) ? ca + operArray[l] + cb : '(' + ca + operArray[l] + cb + ')';
                                 var newNum = new ObjNumber(newVal, newCalcul);
 
                                 if (fra.length=== 0 && frb.length===0) {
-                                    newNum.first_result = ca + this.operations[l] + cb;
+                                    newNum.first_result = ca + operArray[l] + cb;
                                 }
                                 else if (fra.length>0 && frb.length>0) {
                                     newNum.first_result=numA.first_result
@@ -312,7 +332,7 @@ GameHandler.prototype.getHint = function (allSolutions) {
                 not_used_oper = not_used_oper + this.operations[l];
             }
         }
-        var secondHint = "You can make it using only " + used_oper.split("").join(" and ");
+        var secondHint = "You can make it using only " + string2readable(used_oper,", ","and");
         if (not_used_oper.length === 1) {
             secondHint = "You can make it without " + not_used_oper.split("");
         }

@@ -47,7 +47,7 @@ function createLevelBar(ctn,allLevels,level, start_index) {
     for (i = start_index; i < start_index+5; i++) {
         lev = allLevels[i];
         var selected_text= i===level? 'selected':'';
-        var operation_text = lev.ops.length === 1 ? "Operation only " + lev.ops : "Operations " + lev.ops.split("").join(", ");
+        var operation_text = lev.ops.length === 1 ? "Operation: only " + lev.ops : "Operations: " + string2readable(lev.ops,", ","and");
         var allnum_text = lev.mustUseAll ? 'Must use all numbers ' : 'Do not have to use all numbers ';
         var sol_text = lev.hasExactSol ? 'Always a solution ' : 'Not always a solution ';
         text = '<div class="btn-group" role="group">' +
@@ -61,8 +61,6 @@ function createLevelBar(ctn,allLevels,level, start_index) {
         ctn.append(text);
     }
 }
-
-
 
 function operate(a, b, oper) {
     switch (oper) {
@@ -90,7 +88,6 @@ function operate(a, b, oper) {
 function isValid(c) {
     return (c >= 0 && Math.abs(c - Math.round(c)) < 0.000001);
 };
-
 
 // Wait till the browser is ready to render the game.
 $(document).ready(function () {
@@ -126,6 +123,7 @@ $(document).ready(function () {
     };
 
     function displayHint() {
+        $('#display_hint').text("  ");
         var hint_b = $('#hint_sol');
         hint_b.fadeIn(1500);
     }
@@ -201,7 +199,8 @@ $(document).ready(function () {
         }
         else {
             gameHandler = new GameHandler(sLevel.size, sLevel.min_number, sLevel.max_number, sLevel.ops,
-                                sLevel.tgt_min, sLevel.tgt_max, sLevel.tgt_step, sLevel.hasExactSol, sLevel.mustUseAll, sLevel.CGTarget);
+                                sLevel.tgt_min, sLevel.tgt_max, sLevel.tgt_step, sLevel.hasExactSol,
+                                sLevel.mustUseAll, sLevel.CGTarget, sLevel.last_ops);
             initGame(gameHandler);
         }
     }
@@ -265,9 +264,8 @@ $(document).ready(function () {
         $('#high_score').text(highScore);
         $('#total_score').text('_');
         $('#current_score').text('_');
-        var ctn_play = $('#play_icon_container');
-        ctn_play.empty();
-        ctn_play.append('<span id="play_icon" class="glyphicon glyphicon-expand center-block"></span>')
+        $('#skip_btn').hide();
+        $('#play_icon').show();
     }
 
     function updateInfo() {
@@ -283,26 +281,27 @@ $(document).ready(function () {
         $('#high_score').text(highScore);
     }
 
-    var addLevel = new GameLevel("Easy Add", 4, 0, 9, "+", 1, 9, 1, true, false, false,5);
-    var easyLevel = new GameLevel("Easy Add and Subtract", 5, 0, 9, "+-", 1, 9, 1, true, false, false,5);
+    var addLevel = new GameLevel("Easy Add", 4, 1, 9, "+", 1, 9, 1, true, false, false,5,"");
+    var easyLevel = new GameLevel("Add and Subtract", 5, 1, 9, "+-", 1, 9, 1, true, false, false,5,"");
  //   var easyadvancedLevel = new GameLevel("Add and Subtract", 6, 0, 9, "+-", 1, 9, 1, true, true, true, 5);
-    var plusmultLevel = new GameLevel("Add and multiply", 4, 1, 9, "+x", 4, 96, 4, true, true, true, 7);
-    var minusmultLevel = new GameLevel("Subtract and multiply", 4, 1, 9, "-x", 2, 24, 2, true, true, true, 7);
-    var minusLevel = new GameLevel("The Strange Mister Minus", 6, 0, 9, "-", 0, 9, 1, true, true, true, 5);
+    var plusmultLevel = new GameLevel("Multiplicator", 3, 1, 9, "+-x", 10, 81, 1, true, true, true, 5, "x");
+    var minusLevel = new GameLevel("The Mysterious Mister Minus", 6, 0, 9, "-", 0, 9, 1, true, true, true, 5, "");
+    var minusmultLevel = new GameLevel("Mister Minus and Multiply", 4, 1, 9, "-x", 2, 36, 2, true, true, true, 5,"x");
 
-    var mediumLevel = new GameLevel("Medium", 4, 1, 9, "+-x", 4, 48, 4, true, true, true, 10);
-    var divideLevel = new GameLevel("Divide and conquer", 5, 1, 9, "+x/", 1, 9, 1, true, true, true, 10);
+    var mediumLevel = new GameLevel("The Standard", 4, 1, 9, "+-x", 4, 48, 4, true, true, true, 10,"");
+    var divideLevel = new GameLevel("Divide and conquer", 5, 1, 9, "+x/", 1, 9, 1, true, true, true, 10,"");
  //   var mediumadvancedLevel = new GameLevel("Medium Challenging", 5, 1, 9, "+-x", 3, 99, 3, false, true, true,10);
-    var twentyfourLevel = new GameLevel("Make 24", 4, 1, 10, "+-x/", 24, 24, 1, true, true, true,10);
-    var challengingLevel = new GameLevel("Challenging", 4, 1, 10, "+-x/", 1, 99, 1, false, true, true,10);
-    var ultimateLevel = new GameLevel("Ultimate", 5, 1, 10, "+-x/", 1, 199, 1, false, true, true,12);
+    var twentyfourLevel = new GameLevel("Make 24", 4, 1, 10, "+-x/", 24, 24, 1, true, true, true,10,"");
+    var challengingLevel = new GameLevel("The Challenge", 4, 1, 10, "+-x/", 1, 99, 1, false, true, true,10,"");
+    var ultimateLevel = new GameLevel("The Ultimate", 5, 1, 10, "+-x/", 1, 199, 1, false, true, true,12,"");
     var allLevels = [];
-    allLevels.push(addLevel, easyLevel, plusmultLevel, minusmultLevel, minusLevel,
+    allLevels.push(addLevel, easyLevel, plusmultLevel, minusLevel, minusmultLevel,
         mediumLevel, divideLevel, twentyfourLevel, challengingLevel, ultimateLevel);
     var level = 2;
     var sLevel = allLevels[level];
     var gameHandler = new GameHandler(sLevel.size, sLevel.min_number, sLevel.max_number, sLevel.ops,
-                        sLevel.tgt_min, sLevel.tgt_max, sLevel.tgt_step, sLevel.hasExactSol, sLevel.mustUseAll, sLevel.CGTarget);
+                        sLevel.tgt_min, sLevel.tgt_max, sLevel.tgt_step, sLevel.hasExactSol,
+                        sLevel.mustUseAll, sLevel.CGTarget, sLevel.last_ops);
     var level_container1 = $('#select_container');
     var level_container2 = $('#select_container2');
     createLevelBar(level_container1, allLevels, level, 0);
@@ -393,7 +392,8 @@ $(document).ready(function () {
         level = $('.level_btn.selected').attr('value');
         sLevel = allLevels[level];
         gameHandler = new GameHandler(sLevel.size, sLevel.min_number, sLevel.max_number, sLevel.ops,
-                            sLevel.tgt_min, sLevel.tgt_max, sLevel.tgt_step, sLevel.hasExactSol, sLevel.mustUseAll, sLevel.CGTarget);
+                            sLevel.tgt_min, sLevel.tgt_max, sLevel.tgt_step, sLevel.hasExactSol,
+                            sLevel.mustUseAll, sLevel.CGTarget, sLevel.last_ops);
         if (challengeStatus) {
             gamesPlayed++;
            // alert("Game skipped.");
@@ -434,11 +434,13 @@ $(document).ready(function () {
         level = $('.level_btn.selected').attr('value');
         sLevel = allLevels[level];
         gameHandler = new GameHandler(sLevel.size, sLevel.min_number, sLevel.max_number, sLevel.ops,
-                            sLevel.tgt_min, sLevel.tgt_max, sLevel.tgt_step, sLevel.hasExactSol, sLevel.mustUseAll, sLevel.CGTarget);
+                            sLevel.tgt_min, sLevel.tgt_max, sLevel.tgt_step, sLevel.hasExactSol,
+                            sLevel.mustUseAll, sLevel.CGTarget, sLevel.last_ops);
         startChallenge();
         initGame(gameHandler);
     })
 
+    //correct bug on popover which needed to be clicked twice
     $('#info_display').on('hidden.bs.popover', function (e) {
         $(e.target).data("bs.popover").inState = { click: false, hover: false, focus: false }
     });
