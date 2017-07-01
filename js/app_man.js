@@ -89,11 +89,24 @@ function isValid(c) {
     return (c >= 0 && Math.abs(c - Math.round(c)) < 0.000001);
 };
 
+// Convert time in milliseconds in a text string with minutes and seconds.
+function display_time(t) {
+    minutes = Math.floor(t / 1000 / 60);
+    secondes = Math.floor(t / 1000 - 60 * minutes);
+    minutesMsg = (minutes > 0) ? (minutes + "m") : "";
+    return (minutesMsg + secondes + "s");
+}
+
+// To compare score and time and rank high_score
+function f_s(score, time) {
+    return score + (1 - time / 1800000);
+}
+
 // Wait till the browser is ready to render the game.
 $(document).ready(function () {
 
-    // Chrono
-    function startChrono() {
+    // Game Timer
+    function startGameTimer() {
         if (typeof (Worker) !== "undefined") {
             if (typeof (w) == "undefined") {
                 w = new Worker("./js/timer.js");
@@ -107,7 +120,7 @@ $(document).ready(function () {
         }
     }
 
-    function stopChrono() {
+    function stopGameTimer() {
         if (typeof (w) !== "undefined") {
             w.terminate();
             w = undefined;
@@ -130,13 +143,14 @@ $(document).ready(function () {
 
     //Score management
     function updateScore() {
-        stopChrono();
+        stopGameTimer();
         totalScore = totalScore + parseInt($('#current_score').text())
         $('#total_score').text(totalScore);
     }
 
-    function getHighScore(gameLevel) {
-        key = "hs_" + gameLevel.lname;
+    //f(gameLevel, ranking, key). Key can be score, time, player_name
+    function getStorage(gameLevel,k) {
+        key = gameLevel.lname +"_" +k;
         if (localStorage.getItem(key)) {
             value = localStorage.getItem(key);
         } else {
@@ -146,10 +160,43 @@ $(document).ready(function () {
         return value;
     }
 
-    function setHighScore(gameLevel, score) {
-        key = "hs_" + gameLevel.lname;
-        localStorage.setItem(key,score);
+    //f(gameLevel, ranking, key, value). Key would be score, time, player_name
+    function setStorage(gameLevel, k,v) {
+        key = gameLevel.lname + "_" + k;
+        localStorage.setItem(key, v);
     }
+
+    //Show high-score at end of a challenge or when requested 
+    function show_hs_modal(update_hs) {
+        header = "<table class='table table-striped'>" +
+            "<tr><th>#</th><th>Name</th><th>Score</th><th>Time</th></tr>";
+        footer = "</table>";
+        table_body = "";
+        n_ranking = 1;
+        for (i = 1; i <= n_ranking; i++) {
+            time_txt = display_time(parseInt(getStorage(sLevel, 'time')));
+            table_body += "<tr><td>" + i + "</td><td>" + getStorage(sLevel, 'player_name') +
+                        "</td><td>" +getStorage(sLevel,'score') +"</td><td>" + time_txt +"</td></tr>"
+        }
+        $('#hs_table').empty();
+        $('#hs_table').append(header + table_body + footer);
+        $('#hs_input').empty();
+        $('#hs_btn').removeClass('update_hs');
+        if (update_hs) {
+            $('#hs_btn').addClass('update_hs');
+            hs_input_html = '<form><div class="form-group row">' + '<label for="name_input" class="col-form-label col-4">Name: </label>' +
+                '<div class="col-8">' + '<input class="form-control" type="text" value="" id="name_input" name="name_input" maxlength="10">' +
+                '</div></div></form>';
+            $('#hs_input').append(hs_input_html);
+        }
+
+        $('#hsModal').modal('show');
+    }
+    //object Score level_name, ranking, score, time, player_name 
+    //object ScoreTable
+    //function updateScoreTable(scoreTable, score);
+    //function getScoreTable(gameLevel)
+    //function setScoreTable(gameLevel, scoreTable)
 
     //Individual game
     function initGame(gameHandler) {
@@ -167,8 +214,8 @@ $(document).ready(function () {
         var ctn_play = $('#play_icon_container');
         ctn_play.empty();
         if (challengeStatus) {
-            stopChrono();
-            startChrono();
+            stopGameTimer();
+            startGameTimer();
             $('#play_icon').hide();
             $('#skip_btn').show();
         } else {
@@ -236,30 +283,37 @@ $(document).ready(function () {
         challengeStatus = true;
         gamesPlayed = 0;
         totalScore = 0;
-        highScore = parseInt(getHighScore(sLevel));
+        highScore = parseInt(getStorage(sLevel,'score'));
         $('#high_score').text(highScore);
         $('#total_score').text(totalScore);
-
+        timeStart = Date.now();
     }
 
     function endChallenge() {
+        stopGameTimer();
+        timeChrono = Date.now() - timeStart;
         challengeStatus = false;
-        stopChrono();
         gamesPlayed = 0;
-        beatHS="";
+        beatHS = "";
+        timeHS = parseInt(getStorage(sLevel, 'time'));
+        update_hs = false;
         // update high score
-        if (totalScore > highScore) {
-            setHighScore(sLevel, totalScore);
+        if (f_s(totalScore, timeChrono) > f_s(highScore, timeHS)) {
+            update_hs = true;
+            setStorage(sLevel, 'score', totalScore);
+            setStorage(sLevel, 'time', timeChrono);
             highScore = totalScore;
             beatHS="Best Score!";
         }
         // alert("You got "+totalScore +" points" + beatHS);
-        msg = totalScore + " points. " + beatHS;
-        $('#tt_end').attr('data-original-title', msg);
-        $('#tt_end').tooltip("show");
-        setTimeout(function () {
-            $('#tt_end').tooltip("hide");
-        }, 10000);
+        msg = totalScore + " points in " + display_time(timeChrono) + ". "+ beatHS;
+        $('#hs_text').text(msg);
+        show_hs_modal(update_hs);
+     //   $('#tt_end').attr('data-original-title', msg);
+     //   $('#tt_end').tooltip("show");
+    //    setTimeout(function () {
+   //         $('#tt_end').tooltip("hide");
+    //    }, 10000);
         totalScore = 0;
         $('#high_score').text(highScore);
         $('#total_score').text('_');
@@ -277,7 +331,7 @@ $(document).ready(function () {
         $('#info_display').attr('data-original-title', lev_title);
         $('#display_level').text('Level: ' + lev_title + ' ');
         sLevel = allLevels[level];
-        highScore = parseInt(getHighScore(sLevel));
+        highScore = parseInt(getStorage(sLevel,'score'));
         $('#high_score').text(highScore);
     }
 
@@ -289,7 +343,7 @@ $(document).ready(function () {
     var minusmultLevel = new GameLevel("Mister Minus and Multiply", 4, 1, 9, "-x", 2, 36, 2, true, true, true, 5,"x");
 
     var mediumLevel = new GameLevel("The Standard", 4, 1, 9, "+-x", 4, 48, 4, true, true, true, 10,"");
-    var divideLevel = new GameLevel("Divide and conquer", 5, 1, 9, "+x/", 1, 9, 1, true, true, true, 10,"");
+    var divideLevel = new GameLevel("The Delicate Doctor Divide", 5, 1, 9, "+x/", 1, 9, 1, true, true, true, 10,"");
  //   var mediumadvancedLevel = new GameLevel("Medium Challenging", 5, 1, 9, "+-x", 3, 99, 3, false, true, true,10);
     var twentyfourLevel = new GameLevel("Make 24", 4, 1, 10, "+-x/", 24, 24, 1, true, true, true,10,"");
     var challengingLevel = new GameLevel("The Challenge", 4, 1, 10, "+-x/", 1, 99, 1, false, true, true,10,"");
@@ -313,6 +367,8 @@ $(document).ready(function () {
     var highScore = 0;
     var w;
     var hintTimeout;
+    var timeStart=Date.now();
+    var timeChrono;
 
     initGame(gameHandler);
 
@@ -438,6 +494,18 @@ $(document).ready(function () {
                             sLevel.mustUseAll, sLevel.CGTarget, sLevel.last_ops);
         startChallenge();
         initGame(gameHandler);
+    })
+
+    $(document).on('click', '.score', function () {
+        if (!challengeStatus) {
+            $('#hs_text').text(sLevel.lname);
+            show_hs_modal();
+        }
+    })
+
+    $(document).on('click', '.update_hs', function () {
+        nameValue = document.getElementById("name_input").value;
+        setStorage(sLevel, 'player_name', nameValue);
     })
 
     //correct bug on popover which needed to be clicked twice
