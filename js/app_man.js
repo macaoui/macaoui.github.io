@@ -568,8 +568,10 @@ $(document).ready(function () {
     })
 
     $(document).on('click', '.score', function () {
+        if (!challengeStatus) {
             $('#hs_text').empty();
             show_hs_modal();
+        }
     })
 
     $(document).on('click', '#input_name_btn', function () {
