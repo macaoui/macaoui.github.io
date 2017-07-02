@@ -407,10 +407,10 @@ $(document).ready(function () {
     var scoreFields = ['score', 'time', 'player_name'];
     var hs_size = 10;
     var addLevel = new GameLevel("Easy Add", 4, 1, 9, "+", 1, 9, 1, true, false, false,5,"");
-    var easyLevel = new GameLevel("Add and Subtract", 5, 1, 9, "+-", 1, 9, 1, true, false, false,5,"");
+    var easyLevel = new GameLevel("Use Them All", 5, 1, 9, "+-", 1, 9, 1, true, true, true,5,"");
  //   var easyadvancedLevel = new GameLevel("Add and Subtract", 6, 0, 9, "+-", 1, 9, 1, true, true, true, 5);
-    var plusmultLevel = new GameLevel("Multiplicator", 3, 1, 9, "+-x", 10, 81, 1, true, true, true, 5, "x");
-    var minusLevel = new GameLevel("The Mysterious Mister Minus", 6, 0, 9, "-", 0, 9, 1, true, true, true, 5, "");
+    var plusmultLevel = new GameLevel("Multiplicator", 3, 2, 9, "+-x", 10, 81, 1, true, true, true, 5, "x");
+    var minusLevel = new GameLevel("The Mysterious Mister Minus", 6, 1, 9, "-", 0, 9, 1, true, true, true, 5, "");
     var minusmultLevel = new GameLevel("Mister Minus and Multiply", 4, 1, 9, "-x", 2, 36, 2, true, true, true, 5,"x");
 
     var mediumLevel = new GameLevel("The Standard", 4, 1, 9, "+-x", 4, 48, 4, true, true, true, 10,"");
@@ -568,10 +568,8 @@ $(document).ready(function () {
     })
 
     $(document).on('click', '.score', function () {
-        if (!challengeStatus) {
             $('#hs_text').empty();
             show_hs_modal();
-        }
     })
 
     $(document).on('click', '#input_name_btn', function () {
