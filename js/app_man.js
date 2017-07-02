@@ -1,5 +1,6 @@
 ﻿var num_container = $('#numbers_container');
 var ope_container = $('#operands_container');
+
 // create an number object with order attribute
 function NumberObject(value, order, selected) {
     this.value = parseInt(value);
@@ -99,7 +100,7 @@ function display_time(t) {
 
 // To compare score and time and rank high_score
 function f_s(score, time) {
-    return score + (1 - time / 1800000);
+    return parseInt(score) + (1 - parseInt(time) / 1800000);
 }
 
 // Wait till the browser is ready to render the game.
@@ -149,54 +150,103 @@ $(document).ready(function () {
     }
 
     //f(gameLevel, ranking, key). Key can be score, time, player_name
-    function getStorage(gameLevel,k) {
-        key = gameLevel.lname +"_" +k;
+    function getStorage(lname, rank,k) {
+        var key = lname +"_" +rank+"_" +k;
         if (localStorage.getItem(key)) {
-            value = localStorage.getItem(key);
+            var value = localStorage.getItem(key);
         } else {
-            value = 0;
+            var value = 0;
             localStorage.setItem(key,value);
         }
         return value;
     }
 
     //f(gameLevel, ranking, key, value). Key would be score, time, player_name
-    function setStorage(gameLevel, k,v) {
-        key = gameLevel.lname + "_" + k;
+    function setStorage(lname, rank, k,v) {
+        var key = lname + "_" + rank + "_" + k;
         localStorage.setItem(key, v);
     }
 
-    //Show high-score at end of a challenge or when requested 
-    function show_hs_modal(update_hs) {
-        header = "<table class='table table-striped'>" +
-            "<tr><th>#</th><th>Name</th><th>Score</th><th>Time</th></tr>";
-        footer = "</table>";
-        table_body = "";
-        n_ranking = 1;
-        for (i = 1; i <= n_ranking; i++) {
-            time_txt = display_time(parseInt(getStorage(sLevel, 'time')));
-            table_body += "<tr><td>" + i + "</td><td>" + getStorage(sLevel, 'player_name') +
-                        "</td><td>" +getStorage(sLevel,'score') +"</td><td>" + time_txt +"</td></tr>"
-        }
-        $('#hs_table').empty();
-        $('#hs_table').append(header + table_body + footer);
-        $('#hs_input').empty();
-        $('#hs_btn').removeClass('update_hs');
-        if (update_hs) {
-            $('#hs_btn').addClass('update_hs');
-            hs_input_html = '<form><div class="form-group row">' + '<label for="name_input" class="col-form-label col-4">Name: </label>' +
-                '<div class="col-8">' + '<input class="form-control" type="text" value="" id="name_input" name="name_input" maxlength="10">' +
-                '</div></div></form>';
-            $('#hs_input').append(hs_input_html);
-        }
+    //Score object
+    function Score(lname, rank, score, time, player_name) {
+        this.lname = lname;
+        this.rank = rank;
+        this.score = (typeof score === 'undefined') ? 0 : score;
+        this.time = (typeof time === 'undefined') ? 3599000 : time;
+        this.player_name = (typeof player_name === 'undefined') ? 'None' : player_name;
+    };
 
-        $('#hsModal').modal('show');
+    Score.prototype.getScore = function () {
+        for (var j = 0; j < scoreFields.length; j++) {
+            var key = scoreFields[j];
+            this[key] = getStorage(this.lname, this.rank, key);
+        }
+    };
+
+    Score.prototype.setScore = function () {
+        var lname = this.lname;
+        var rank = this.rank;
+        for (var i = 0; i < scoreFields.length; i++) {
+            var key = scoreFields[i];
+            setStorage(lname, rank, key, this[key]);
+        }
     }
-    //object Score level_name, ranking, score, time, player_name 
-    //object ScoreTable
-    //function updateScoreTable(scoreTable, score);
-    //function getScoreTable(gameLevel)
-    //function setScoreTable(gameLevel, scoreTable)
+
+    //High score table object
+    function ScoreTable(size, lname) {
+        this.size = size;
+        this.lname = lname;
+    };
+
+    ScoreTable.prototype.getTable = function () {
+        this.all_scores = [];
+        for (var i = 0; i < this.size; i++) {
+            this.all_scores.push(new Score(this.lname, i+1));
+            this.all_scores[i].getScore();
+        }
+    };
+
+    ScoreTable.prototype.setTable = function () {
+        for (var i = 0; i < this.all_scores.length; i++) {
+            this.all_scores[i].setScore();
+        }
+    };
+
+    ScoreTable.prototype.update = function (scoreObj) {
+        //test if score shall be inserted in score table
+        var ranking = this.size;
+        var rankFound = false;
+        var newScore = f_s(scoreObj.score, scoreObj.time);
+        var lastScoreObj = this.all_scores[ranking-1];
+        var lastScore = f_s(lastScoreObj.score, lastScoreObj.time);
+        var update_hs = false;
+        if (newScore > lastScore) {
+            update_hs = true;
+            ranking--;
+            this.all_scores.pop();
+            //find the ranking of the new score within the table and update score ranks.
+            do {
+                var checkScore = this.all_scores[ranking - 1];
+                if (newScore > f_s(checkScore.score, checkScore.time)) {
+                    ranking--;
+                    checkScore.rank++;
+                    if (ranking == 0) {
+                        rankFound = true;
+                        scoreObj.rank = ranking + 1;
+                        this.all_scores.splice(ranking, 0, scoreObj);
+                    }
+                }
+                else {
+                    rankFound = true;
+                    scoreObj.rank = ranking + 1;
+                    this.all_scores.splice(ranking, 0, scoreObj);
+                }
+            }
+            while (ranking > 0 && !rankFound);
+            this.setTable();
+        }
+        return ranking+1;
+    };
 
     //Individual game
     function initGame(gameHandler) {
@@ -216,11 +266,11 @@ $(document).ready(function () {
         if (challengeStatus) {
             stopGameTimer();
             startGameTimer();
-            $('#play_icon').hide();
+            $('#new_game_btn').hide();
             $('#skip_btn').show();
         } else {
             $('#skip_btn').hide();
-            $('#play_icon').show();
+            $('#new_game_btn').show();
         }
         updateInfo();
         hintsGiven = 0;
@@ -283,7 +333,7 @@ $(document).ready(function () {
         challengeStatus = true;
         gamesPlayed = 0;
         totalScore = 0;
-        highScore = parseInt(getStorage(sLevel,'score'));
+        highScore = parseInt(getStorage(sLevel.lname,1,'score'));
         $('#high_score').text(highScore);
         $('#total_score').text(totalScore);
         timeStart = Date.now();
@@ -294,32 +344,51 @@ $(document).ready(function () {
         timeChrono = Date.now() - timeStart;
         challengeStatus = false;
         gamesPlayed = 0;
-        beatHS = "";
-        timeHS = parseInt(getStorage(sLevel, 'time'));
-        update_hs = false;
-        // update high score
-        if (f_s(totalScore, timeChrono) > f_s(highScore, timeHS)) {
-            update_hs = true;
-            setStorage(sLevel, 'score', totalScore);
-            setStorage(sLevel, 'time', timeChrono);
-            highScore = totalScore;
-            beatHS="Best Score!";
-        }
-        // alert("You got "+totalScore +" points" + beatHS);
-        msg = totalScore + " points in " + display_time(timeChrono) + ". "+ beatHS;
-        $('#hs_text').text(msg);
-        show_hs_modal(update_hs);
-     //   $('#tt_end').attr('data-original-title', msg);
-     //   $('#tt_end').tooltip("show");
-    //    setTimeout(function () {
-   //         $('#tt_end').tooltip("hide");
-    //    }, 10000);
+        var gameScore = new Score(sLevel.lname, 999, totalScore, timeChrono, 'NEW');
+        msg = "<small> You just got " + totalScore + " points in " + display_time(timeChrono) + "</small><br>";
         totalScore = 0;
         $('#high_score').text(highScore);
         $('#total_score').text('_');
         $('#current_score').text('_');
         $('#skip_btn').hide();
-        $('#play_icon').show();
+        $('#new_game_btn').show();
+        $('#hs_text').empty();
+        $('#hs_text').append(msg);
+        // update high score
+        var hsTable = new ScoreTable(hs_size, sLevel.lname);
+        hsTable.getTable();
+        var gameRanking=hsTable.update(gameScore);
+        if (gameRanking <= hs_size) {
+            show_input_name_modal(gameRanking);
+        }
+        else {
+            show_hs_modal();
+        }
+    }
+
+    //Show input_name_modal if the player enter in the high scores
+    function show_input_name_modal(ranking) {
+        $('#input_name_text').text('Congratulations, you have reached rank no ' + ranking+ ' !');
+        $('#name_input').attr('ranking', ranking);
+        document.getElementById("name_input").value='';
+        $('#inputNameModal').modal('show');
+    }
+
+    //Show high-score at end of a challenge or when requested 
+    function show_hs_modal() {
+        $('#hs_text').append('High Score - ' + sLevel.lname);
+        var header = "<table class='table table-striped'>" +
+            "<tr><th>#</th><th>Name</th><th>Score</th><th>Time</th></tr>";
+        var footer = "</table>";
+        var table_body = "";
+        for (i = 1; i <= hs_size; i++) {
+            var time_txt = display_time(parseInt(getStorage(sLevel.lname, i,'time')));
+            table_body += "<tr><td>" + i + "</td><td>" + getStorage(sLevel.lname, i,'player_name') +
+                        "</td><td>" + getStorage(sLevel.lname,i, 'score') + "</td><td>" + time_txt + "</td></tr>"
+        }
+        $('#hs_table').empty();
+        $('#hs_table').append(header + table_body + footer);
+        $('#hsModal').modal('show');
     }
 
     function updateInfo() {
@@ -331,10 +400,12 @@ $(document).ready(function () {
         $('#info_display').attr('data-original-title', lev_title);
         $('#display_level').text('Level: ' + lev_title + ' ');
         sLevel = allLevels[level];
-        highScore = parseInt(getStorage(sLevel,'score'));
+        highScore = parseInt(getStorage(sLevel.lname,1,'score'));
         $('#high_score').text(highScore);
     }
 
+    var scoreFields = ['score', 'time', 'player_name'];
+    var hs_size = 10;
     var addLevel = new GameLevel("Easy Add", 4, 1, 9, "+", 1, 9, 1, true, false, false,5,"");
     var easyLevel = new GameLevel("Add and Subtract", 5, 1, 9, "+-", 1, 9, 1, true, false, false,5,"");
  //   var easyadvancedLevel = new GameLevel("Add and Subtract", 6, 0, 9, "+-", 1, 9, 1, true, true, true, 5);
@@ -481,7 +552,7 @@ $(document).ready(function () {
         }, 5000);
     })
 
-    $(document).on('click', '#play_icon', function () {
+    $(document).on('click', '#new_game_btn', function () {
         $('#playModal').modal('show');
     })
 
@@ -498,14 +569,17 @@ $(document).ready(function () {
 
     $(document).on('click', '.score', function () {
         if (!challengeStatus) {
-            $('#hs_text').text(sLevel.lname);
+            $('#hs_text').empty();
             show_hs_modal();
         }
     })
 
-    $(document).on('click', '.update_hs', function () {
+    $(document).on('click', '#input_name_btn', function () {
+        $('#inputNameModal').modal('hide');
+        ranking = $('#name_input').attr('ranking');
         nameValue = document.getElementById("name_input").value;
-        setStorage(sLevel, 'player_name', nameValue);
+        setStorage(sLevel.lname, ranking, 'player_name', nameValue);
+        show_hs_modal();
     })
 
     //correct bug on popover which needed to be clicked twice
