@@ -407,14 +407,14 @@ $(document).ready(function () {
     var scoreFields = ['score', 'time', 'player_name'];
     var hs_size = 10;
     var addLevel = new GameLevel("Easy Add", 4, 1, 9, "+", 1, 9, 1, true, false, false,5,"");
-    var easyLevel = new GameLevel("Plus and Minus", 4, 1, 9, "+-", 4, 12, 1, true, false, false,5,"");
+    var easyLevel = new GameLevel("Plus and Minus", 5, 1, 9, "+-", 4, 20, 1, true, false, false,5,"");
  //   var easyadvancedLevel = new GameLevel("Add and Subtract", 6, 0, 9, "+-", 1, 9, 1, true, true, true, 5);
-    var plusmultLevel = new GameLevel("Multiplicator", 3, 2, 9, "+-x", 10, 81, 1, true, true, true, 5, "x");
+    var plusmultLevel = new GameLevel("Multiply Master", 3, 2, 9, "+-x", 10, 81, 1, true, true, true, 5, "x");
     var minusLevel = new GameLevel("The Mysterious Mister Minus", 6, 1, 9, "-", 0, 9, 1, true, true, true, 5, "");
     var minusmultLevel = new GameLevel("Mister Minus and Multiply", 4, 1, 9, "-x", 2, 36, 2, true, true, true, 5,"x");
 
     var mediumLevel = new GameLevel("The Standard", 4, 1, 9, "+-x", 4, 48, 4, true, true, true, 10,"");
-    var divideLevel = new GameLevel("The Delicate Doctor Divide", 5, 1, 9, "+x/", 1, 9, 1, true, true, true, 10,"");
+    var divideLevel = new GameLevel("The Divide Dandy", 5, 1, 9, "+x/", 1, 9, 1, true, true, true, 10,"");
  //   var mediumadvancedLevel = new GameLevel("Medium Challenging", 5, 1, 9, "+-x", 3, 99, 3, false, true, true,10);
     var twentyfourLevel = new GameLevel("Make 24", 4, 1, 10, "+-x/", 24, 24, 1, true, true, true,10,"");
     var challengingLevel = new GameLevel("The Challenge", 4, 1, 10, "+-x/", 1, 99, 1, false, true, true,10,"");
