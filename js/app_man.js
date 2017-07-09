@@ -400,6 +400,12 @@ $(document).ready(function () {
         $('#info_display').attr('data-original-title', lev_title);
         $('#display_level').text('Level: ' + lev_title + ' ');
         sLevel = allLevels[level];
+        if (sLevel.isCustom) {
+            $('#custom_link').show();
+        }
+        else {
+            $('#custom_link').hide();
+        }
         highScore = parseInt(getStorage(sLevel.lname,1,'score'));
         $('#high_score').text(highScore);
     }
@@ -411,7 +417,7 @@ $(document).ready(function () {
  //   var easyadvancedLevel = new GameLevel("Add and Subtract", 6, 0, 9, "+-", 1, 9, 1, true, true, true, 5);
     var plusmultLevel = new GameLevel("Multiply Master", 3, 2, 9, "+-x", 10, 81, 1, true, true, true, 5, "x");
     var minusLevel = new GameLevel("The Mysterious Mister Minus", 6, 1, 9, "-", 0, 9, 1, true, true, true, 5, "");
-    var minusmultLevel = new GameLevel("Mister Minus and Multiply", 4, 1, 9, "-x", 2, 36, 2, true, true, true, 5,"x");
+    var minusmultLevel = new GameLevel("Mister Minus and Multiply", 4, 1, 9, "-x", 2, 36, 2, true, true, true, 5,"x",true);
 
     var mediumLevel = new GameLevel("The Standard", 4, 1, 9, "+-x", 4, 48, 4, true, true, true, 10,"");
     var divideLevel = new GameLevel("The Divide Dandy", 5, 1, 9, "+x/", 1, 9, 1, true, true, true, 10,"");

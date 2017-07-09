@@ -48,86 +48,199 @@
 
     <div class="container">
 
-            <!-- Modal Solver -->
-            <div class="modal fade" id="solverModal" role="dialog">
-                <div class="modal-dialog">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <!-- Modal Level Customization -->
+        <div class="modal fade" id="customLevelModal" role="dialog">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    </div>
+                    <div class="modal-body">
+                        <div id="custom_level_text" class="display_text">
+                            Make your own level:
                         </div>
-                        <div class="modal-body">
+                        <div id="custom_level_form">
                             <form>
-                                <div class="form-group">
-                                    <label for="targetInput">Target:</label>
-                                    <input type="number" class="form-control" name="solverTarget" min="0" max="999999" required>
-                                </div>
-                                <div class="form-group">
-                                    <fieldset>
-                                        <label>Numbers:</label>
-                                        <div class="wrap">
-                                            <input type="number" class="form-control numInput" name="solverNum1" min="0" max="99" required>
-                                            <input type="number" class="form-control numInput" name="solverNum2" min="0" max="99" required>
-                                            <input type="number" class="form-control numInput" name="solverNum3" min="0" max="99" required>
-                                            <input type="number" class="form-control numInput" name="solverNum4" min="0" max="99">
-                                        </div>
-
-                                    </fieldset>
-
-                                </div>
-
-                                <fieldset class="form-group">
-                                    <legend>Operations</legend>
-                                    <div class="form-check">
-                                        <label class="form-check-label">
-                                            <input type="checkbox" class="form-check-input opeInput" name="solverPlus" id="solverPlus" value="plus" checked> +
-                                        </label>
-                                        <label class="form-check-label">
-                                            <input type="checkbox" class="form-check-input opeInput" name="solverMinus" id="solverPlus" value="minus" checked> -
-                                        </label>
-                                        <label class="form-check-label">
-                                            <input type="checkbox" class="form-check-input opeInput" name="solverMultiply" id="solverMultiply" value="multiply" checked> x
-                                        </label>
-                                        <label class="form-check-label">
-                                            <input type="checkbox" class="form-check-input opeInput" name="solverDivide" id="solverDivide" value="divide" checked> /
-                                        </label>
+                                <div class="form-group form-inline row">
+                                    <div class="col-xs-2">
+                                        <label for="level_name">Name:</label>
                                     </div>
-                                </fieldset>
-                                <div class="form-check">
-                                    <label class="form-check-label">
-                                        <input type="checkbox" class="form-check-input" name="solverUseAll" id="solverUseAll" checked>
-                                        Must use all numbers
-                                    </label>
+                                    <div class="col-xs-10">
+                                        <input class="form-control" type="text" value="" id="level_name" name="level_name"
+                                               placeholder="Level name" maxlength="30" required>
+                                    </div>
                                 </div>
-                                <button type="button" class="btn round btn-info outline center-block btn-solver" data-dismiss="modal"> Solve It! </button>
+                                <!-- size, min_number, max_number, ops, tgt_min, tgt_max, tgt_step, hasExactSol, mustUseAll, canGenerateTarget, timer -->
+                                <!-- Size and numbers params-->
+                                <div class="form-group from-inline row">
+                                    <div class="col-xs-2">
+                                        <label for="level_size">Size:</label>
+                                    </div>
+                                    <div class="col-xs-10">
+                                        <input class="form-control" type="number" value="" id="level_size" name="level_size"
+                                               placeholder="Number of numbers" min="2" max="6" required>
+                                    </div>
+                                </div>
+                                <div class="form-group from-inline row">
+                                    <div class="col-xs-2">
+                                        <label for="level_min_number">Min:</label>
+                                    </div>
+                                    <div class="col-xs-3">
+                                        <input class="form-control" type="number" value="" id="level_min_number" name="level_min_number"
+                                               placeholder="Minimum" min="0" max="99" required>
+                                    </div>
+                                    <div class="col-xs-2">
+                                        <label for="level_max_number">Max:</label>
+                                    </div>
+                                    <div class="col-xs-3">
+                                        <input class="form-control" type="number" value="" id="level_max_number" name="level_max_number"
+                                               placeholder="Maximum" min="0" max="99" required>
+                                    </div>
+                                </div>
+                                <!--Target params-->
+                                <div class="form-group from-inline row">
+                                    <div class="col-xs-2">
+                                        <label for="level_tgt_min">Target Min</label>
+                                    </div>
+                                    <div class="col-xs-2">
+                                        <input class="form-control" type="number" value="" id="level_tgt_min" name="level_tgt_min"
+                                               placeholder="Minimum" min="0" max="99" required>
+                                    </div>
+                                    <div class="col-xs-2">
+                                        <label for="level_tgt_max">Target Max:</label>
+                                    </div>
+                                    <div class="col-xs-2">
+                                        <input class="form-control" type="number" value="" id="level_tgt_max" name="level_tgt_max"
+                                               placeholder="Maximum" min="0" max="99" required>
+                                    </div>
+                                    <div class="col-xs-2">
+                                        <label for="level_tgt_step">Target step:</label>
+                                    </div>
+                                    <div class="col-xs-2">
+                                        <input class="form-control" type="number" value="" id="level_tgt_step" name="level_tgt_step"
+                                               placeholder="step" min="0" max="99" required>
+                                    </div>
+                                </div>
+                                <!--Operations-->
+                                <div class="form-group from-inline row">
+                                    Operations:
+                                    <label class="checkbox-inline"><input type="checkbox" name="opePlus" id="opePlus" value="" checked>+</label>
+                                    <label class="checkbox-inline"><input type="checkbox" name="opeMinus" id="opeMinus" value="">-</label>
+                                    <label class="checkbox-inline"><input type="checkbox" name="opeMultiply" id="opeMinus" value="">x</label>
+                                    <label class="checkbox-inline"><input type="checkbox" name="opeDivide" id="opeMinus" value="">/</label>
+                                </div>
+                                <!-- Game options -->
+                                <label class="checkbox"><input type="checkbox" name="mustUseAll" id="mustUseAll" value=""> Must use all numbers</label>
+                                <label class="checkbox"><input type="checkbox" name="hasAlwaysSolution" id="hasAlwaysSolution" value=""> Has always a solution</label>
+                                <div class="form-group from-inline row">
+                                    <div class="col-xs-8">
+                                        <label for="level_timer">Score timer (seconds)</label>
+                                    </div>
+                                    <div class="col-xs-4">
+                                        <input class="form-control" type="number" value="" id="level_timer" name="level_timer"
+                                               min="1" max="99" required>
+                                        <span class="help-block">Number of seconds to decrease score by 1 point</span>
+                                    </div>
+                                </div>
                             </form>
                         </div>
                     </div>
-                </div>
-            </div>
-
-            <!-- Modal Play -->
-            <div class="modal fade" id="playModal" role="dialog">
-                <div class="modal-dialog">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <button type="button" class="close" data-dismiss="modal">&times;</button>
-                        </div>
-                        <div class="modal-body">
-                            <div class="container wrap">
-                                <button type="button" class="outline center btn round btn-danger" id="start_challenge" data-dismiss="modal"> Challenge ! </button>
-                                <br />
-                                <div class="modal_play_text"> 10 games chrono </div>
-                            </div>
-                            <hr />
-                            <div class="container wrap">
-                                <button type="button" class="outline center btn round btn-success btn-new" data-dismiss="modal"> Casual Game </button>
-                                <br />
-                                <div class="modal_play_text"> No chrono, no score </div>
-                            </div>
+                    <div class="modal-footer">
+                        <div class="container wrap">
+                            <button type="button" id="custom_level_btn" class="btn round btn-primary outline center-block" data-dismiss="modal"> OK </button>
+                            <!--Validation of the input
+                                    Max shall be above min
+                                    At least one operation shall be selected
+                                    [Optional: test game complexity]
+                                    Test level can generate numbers and solution
+                                    -->
                         </div>
                     </div>
                 </div>
             </div>
+        </div>
+
+
+        <!-- Modal Solver -->
+        <div class="modal fade" id="solverModal" role="dialog">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    </div>
+                    <div class="modal-body">
+                        <form>
+                            <div class="form-group">
+                                <label for="targetInput">Target:</label>
+                                <input type="number" class="form-control" name="solverTarget" min="0" max="999999" required>
+                            </div>
+                            <div class="form-group">
+                                <fieldset>
+                                    <label>Numbers:</label>
+                                    <div class="wrap">
+                                        <input type="number" class="form-control numInput" name="solverNum1" min="0" max="99" required>
+                                        <input type="number" class="form-control numInput" name="solverNum2" min="0" max="99" required>
+                                        <input type="number" class="form-control numInput" name="solverNum3" min="0" max="99" required>
+                                        <input type="number" class="form-control numInput" name="solverNum4" min="0" max="99">
+                                    </div>
+
+                                </fieldset>
+
+                            </div>
+
+                            <fieldset class="form-group">
+                                <legend>Operations</legend>
+                                <div class="form-check">
+                                    <label class="form-check-label">
+                                        <input type="checkbox" class="form-check-input opeInput" name="solverPlus" id="solverPlus" value="plus" checked> +
+                                    </label>
+                                    <label class="form-check-label">
+                                        <input type="checkbox" class="form-check-input opeInput" name="solverMinus" id="solverPlus" value="minus" checked> -
+                                    </label>
+                                    <label class="form-check-label">
+                                        <input type="checkbox" class="form-check-input opeInput" name="solverMultiply" id="solverMultiply" value="multiply" checked> x
+                                    </label>
+                                    <label class="form-check-label">
+                                        <input type="checkbox" class="form-check-input opeInput" name="solverDivide" id="solverDivide" value="divide" checked> /
+                                    </label>
+                                </div>
+                            </fieldset>
+                            <div class="form-check">
+                                <label class="form-check-label">
+                                    <input type="checkbox" class="form-check-input" name="solverUseAll" id="solverUseAll" checked>
+                                    Must use all numbers
+                                </label>
+                            </div>
+                            <button type="button" class="btn round btn-info outline center-block btn-solver" data-dismiss="modal"> Solve It! </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Modal Play -->
+        <div class="modal fade" id="playModal" role="dialog">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="container wrap">
+                            <button type="button" class="outline center btn round btn-danger" id="start_challenge" data-dismiss="modal"> Challenge ! </button>
+                            <br />
+                            <div class="modal_play_text"> 10 games chrono </div>
+                        </div>
+                        <hr />
+                        <div class="container wrap">
+                            <button type="button" class="outline center btn round btn-success btn-new" data-dismiss="modal"> Casual Game </button>
+                            <br />
+                            <div class="modal_play_text"> No chrono, no score </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
 
         <!-- Modal High Score -->
         <div class="modal fade" id="hsModal" role="dialog">
@@ -261,6 +374,7 @@
             </div>
             <div id="display_level_container" class="display_level_container wrap">
                 <div id="display_level" class="display_text center-block">Level: </div>
+                <div id="custom_link" class="center-block"><a href="#" data-toggle="modal" data-target="#customLevelModal">[Custom]</a> </div>
                 <span id="info_display" class="glyphicon glyphicon-info-sign center-block"
                       data-toggle="popover" data-content="" data-html="true" data-placement="bottom"></span>
             </div>

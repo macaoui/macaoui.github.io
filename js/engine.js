@@ -9,7 +9,7 @@ function string2readable(str, sep, sep2) {
     }
 }
 
-function GameLevel(lname, size, min_number, max_number, ops, tgt_min, tgt_max, tgt_step, hasExactSol, mustUseAll, canGenerateTarget, timer, last_ops) {
+function GameLevel(lname, size, min_number, max_number, ops, tgt_min, tgt_max, tgt_step, hasExactSol, mustUseAll, canGenerateTarget, timer, last_ops,isCustom) {
     this.lname = lname;
     this.size = size;
     this.ops = ops;
@@ -26,6 +26,7 @@ function GameLevel(lname, size, min_number, max_number, ops, tgt_min, tgt_max, t
     this.mustUseAll = mustUseAll;
     this.CGTarget = canGenerateTarget;
     this.timer = timer;
+    this.isCustom =  isCustom || false;
 }
 
 function GameHandler(size, min_number, max_number, ops, tgt_min, tgt_max, tgt_step, hasExactSol, mustUseAll, canGenerateTarget, last_ops) {
@@ -48,7 +49,7 @@ function GameHandler(size, min_number, max_number, ops, tgt_min, tgt_max, tgt_st
     this.listOfSolutions = new Array();
     this.hintList = new Array();
     this.selectSol = "";
-    this.generateNumbers(true);
+    this.generateError= this.generateNumbers();
 }
 
 function ObjNumber(n, s) {
@@ -74,6 +75,7 @@ GameHandler.prototype.generateRandomNumbers = function (min, max, step) {
 GameHandler.prototype.generateNumbers = function () {
     var trials_counter = 0;
     var trials_counter2 = 0;
+    var generateNumbersError = "";
     do {
         trials_counter++;
         this.target = this.generateRandomNumbers(this.min_target, this.max_target, this.step_target);
@@ -84,7 +86,7 @@ GameHandler.prototype.generateNumbers = function () {
                 trials_counter2++;
                 if (trials_counter2 > 100) {
                     //raise error
-                    var generateNumbersError=true;
+                    generateNumbersError="Can not generate the initial numbers.";
                     break;
                 }
             }
@@ -104,37 +106,40 @@ GameHandler.prototype.generateNumbers = function () {
 
         if (trials_counter > 100) {
             //raise error
-            var generateNumbersError = true;
+            generateNumbersError = "Can not generate a game with solution.";
             break;
         }
     }
     while (!this.foundSol && this.hasExactSolution)
 
-    if (allSolutions.lowerSol === this.target) {
-        this.bestSolution.push(this.target);
-        for (var i = 0; i < allSolutions.lowerSolList.length; i++) {
-            this.listOfSolutions.push(allSolutions.lowerSolList[i]);
-            this.stringSolutions.push(allSolutions.lowerSolList[i].computation);
-        }
-    }
-    else {
-        if (this.target - allSolutions.lowerSol <= allSolutions.upperSol - this.target) {
-            this.bestSolution.push(allSolutions.lowerSol);
+    if (generateNumbersError.length === 0) {
+        if (allSolutions.lowerSol === this.target) {
+            this.bestSolution.push(this.target);
             for (var i = 0; i < allSolutions.lowerSolList.length; i++) {
                 this.listOfSolutions.push(allSolutions.lowerSolList[i]);
                 this.stringSolutions.push(allSolutions.lowerSolList[i].computation);
             }
         }
-        if (this.target - allSolutions.lowerSol >= allSolutions.upperSol - this.target) {
-            this.bestSolution.push(allSolutions.upperSol);
-            for (var i = 0; i < allSolutions.upperSolList.length; i++) {
-                this.listOfSolutions.push(allSolutions.upperSolList[i]);
-                this.stringSolutions.push(allSolutions.upperSolList[i].computation);
+        else {
+            if (this.target - allSolutions.lowerSol <= allSolutions.upperSol - this.target) {
+                this.bestSolution.push(allSolutions.lowerSol);
+                for (var i = 0; i < allSolutions.lowerSolList.length; i++) {
+                    this.listOfSolutions.push(allSolutions.lowerSolList[i]);
+                    this.stringSolutions.push(allSolutions.lowerSolList[i].computation);
+                }
+            }
+            if (this.target - allSolutions.lowerSol >= allSolutions.upperSol - this.target) {
+                this.bestSolution.push(allSolutions.upperSol);
+                for (var i = 0; i < allSolutions.upperSolList.length; i++) {
+                    this.listOfSolutions.push(allSolutions.upperSolList[i]);
+                    this.stringSolutions.push(allSolutions.upperSolList[i].computation);
+                }
             }
         }
-    }
 
-    this.hintList = this.getHint(this.listOfSolutions);
+        this.hintList = this.getHint(this.listOfSolutions);
+    }
+    return generateNumbersError;
 };
 
 GameHandler.prototype.operate = function (a, b, oper) {
