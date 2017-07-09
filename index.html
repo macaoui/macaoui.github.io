@@ -142,19 +142,19 @@
                                         <span class="help-block">Number of seconds to decrease score by 1 point</span>
                                     </div>
                                 </div>
-                            </form>
-                        </div>
-                    </div>
-                    <div class="modal-footer">
-                        <div class="container wrap">
-                            <button type="button" id="custom_level_btn" class="btn round btn-primary outline center-block" data-dismiss="modal"> OK </button>
-                            <!--Validation of the input
+                                <div class="container wrap">
+                                    <button type="submit" id="custom_level_btn" class="btn round btn-primary outline center-block"> OK </button>
+                                    <!--Validation of the input
                                     Max shall be above min
                                     At least one operation shall be selected
                                     [Optional: test game complexity]
                                     Test level can generate numbers and solution
                                     -->
+                                </div>
+                            </form>
                         </div>
+                    </div>
+                    <div class="modal-footer">
                     </div>
                 </div>
             </div>
@@ -276,16 +276,16 @@
                                 <div class="form-group row">
                                     <div class="">
                                         <input class="form-control" type="text" value="" id="name_input" name="name_input"
-                                               placeholder="Enter your name" maxlength="20" ranking="">
+                                               placeholder="Enter your name" maxlength="20" ranking="" required>
                                     </div>
+                                </div>
+                                <div class="container wrap">
+                                    <button type="submit" id="input_name_btn" class="btn round btn-primary outline center-block" data-dismiss="modal"> OK! </button>
                                 </div>
                             </form>
                         </div>
                     </div>
                     <div class="modal-footer">
-                        <div class="container wrap">
-                            <button type="button" id="input_name_btn" class="btn round btn-primary outline center-block" data-dismiss="modal"> OK! </button>
-                        </div>
                     </div>
                 </div>
             </div>

@@ -29,21 +29,21 @@ function GameLevel(lname, size, min_number, max_number, ops, tgt_min, tgt_max, t
     this.isCustom =  isCustom || false;
 }
 
-function GameHandler(size, min_number, max_number, ops, tgt_min, tgt_max, tgt_step, hasExactSol, mustUseAll, canGenerateTarget, last_ops) {
-    this.min_target = tgt_min;
-    this.max_target = tgt_max;
-    this.step_target = tgt_step;
-    this.target = this.generateRandomNumbers(tgt_min, tgt_max, tgt_step);
-    this.min_number = min_number;
-    this.max_number = max_number;
-    this.size = size;
-    this.hasExactSolution = hasExactSol;
-    this.mustUseAll = mustUseAll;
-    this.CGTarget = canGenerateTarget;
-    this.Numbers = new Array(size);
-    this.objNumbers = new Array(size);
-    this.operations = ops.toString().split("");
-    this.lastOperations = last_ops.toString().split("");
+function GameHandler(gameLevel) {
+    this.min_target = gameLevel.tgt_min;
+    this.max_target = gameLevel.tgt_max;
+    this.step_target = gameLevel.tgt_step;
+    this.target = this.generateRandomNumbers(gameLevel.tgt_min, gameLevel.tgt_max, gameLevel.tgt_step);
+    this.min_number = gameLevel.min_number;
+    this.max_number = gameLevel.max_number;
+    this.size = gameLevel.size;
+    this.hasExactSolution = gameLevel.hasExactSol;
+    this.mustUseAll = gameLevel.mustUseAll;
+    this.CGTarget = gameLevel.canGenerateTarget;
+    this.Numbers = new Array(this.size);
+    this.objNumbers = new Array(this.size);
+    this.operations = gameLevel.ops.toString().split("");
+    this.lastOperations = gameLevel.last_ops.toString().split("");
     this.foundSol = false;
     this.bestSolution = new Array();
     this.listOfSolutions = new Array();
