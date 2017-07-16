@@ -202,7 +202,16 @@ h3 {
     text-align: center;
 }
 
+.error_text {
+    color: red;
+}
+
 .clickable {
     cursor: pointer;
 }
+
+.modal-header {
+    background-color:rgba(0,0,255,0.1);
+}
+
 

@@ -49,13 +49,13 @@ function createLevelBar(ctn,allLevels,level, start_index) {
     for (var i = start_index; i < start_index+5; i++) {
         var lev = allLevels[i];
         var selected_text= i===parseInt(level)? 'selected':'';
-        var operation_text = lev.ops.length === 1 ? "Operation: only " + lev.ops : "Operations: " + string2readable(lev.ops,", ","and");
+     //   var operation_text = lev.ops.length === 1 ? "Operation: only " + lev.ops : "Operations: " + string2readable(lev.ops,", ","and");
         var allnum_text = lev.mustUseAll ? 'Must use all numbers ' : 'Do not have to use all numbers ';
         var sol_text = lev.hasExactSol ? 'Always a solution ' : 'Not always a solution ';
         var text = '<div class="btn-group" role="group">' +
                                 '<button type="button" class="level_btn btn round btn-default '+ selected_text+'"' +
                                         'value=' + parseInt(i) + ' info="' +
-                                         operation_text + ' <br>' +
+                                   //      operation_text + ' <br>' +
                                         allnum_text + '<br>' +
                                         sol_text +
                                         '" title="' + lev.lname +'"></button>' +
@@ -415,6 +415,17 @@ $(document).ready(function () {
         $('#high_score').text(highScore);
     }
 
+    //update levels list after custom form submitted or reset
+    function updateLevelsList(newLevel) {
+        $('#customLevelModal').modal('hide');
+        newLevel.setLevel();
+        allLevels.splice(level, 1, newLevel);
+        createLevelBar(level_container1, allLevels, level, 0);
+        createLevelBar(level_container2, allLevels, level, 5);
+        var newGame = new GameHandler(newLevel);
+        initGame(newGame);
+    }
+
     function check(e) {
         return document.getElementById(e).checked;
     }
@@ -622,6 +633,11 @@ $(document).ready(function () {
         }
     })
 
+    $(document).on('click', '#reset_level_btn', function () {
+        // replace currentLevel with satnsard level.
+        updateLevelsList(defaultLevels[level]);
+    })
+
     $('#custom_level_form').on('submit', function (e) {
         var hasError = false;
         var index = parseInt(level);
@@ -694,21 +710,11 @@ $(document).ready(function () {
                 $('#custom_generation_error').text('');
                 $('#level_min_number').closest('.form-group').removeClass('has-error');
                 $('#level_tgt_min').closest('.form-group').removeClass('has-error');
-                // save params in localStorage, replace old one in the list, launch a game
-                $('#customLevelModal').modal('hide');
-                newLevel.setLevel();
-                allLevels.splice(level, 1, newLevel);
-                createLevelBar(level_container1, allLevels, level, 0);
-                createLevelBar(level_container2, allLevels, level, 5);
-                initGame(gameTest);
+                updateLevelsList(newLevel);
                 e.preventDefault(); //no form submission
                 // optional: text game complexity
-
             }
-            // TO DO
-            // add possibility to reset custom levels
         }
-
     });
 
     //correct bug on popover which needed to be clicked twice

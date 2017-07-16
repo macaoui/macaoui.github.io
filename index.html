@@ -53,103 +53,111 @@
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                        <div class="container wrap">
+                            <div class="center-block">
+                                <b>Make a level</b>
+                            </div>
+                            <button type="button" class="close close_modal_btn" data-dismiss="modal">&times;</button>
+                        </div>
+
                     </div>
                     <div class="modal-body">
-                        <div id="custom_level_text" class="display_text">
-                            Make your own level:
-                        </div>
-                        <div id="">
-                            <form name="custom_level_form" id="custom_level_form">
-                                <div id="custom_generation_error" class="error_text"></div>
-                                <div class="form-group form-inline row">
-                                    <div class="col-xs-2">
-                                        <label for="level_lname">Name:</label>
-                                    </div>
-                                    <div class="col-xs-10">
-                                        <input class="form-control" type="text" value="" id="level_lname" name="level_lname"
-                                               placeholder="Level name" maxlength="30" required>
-                                    </div>
+                        <form name="custom_level_form" id="custom_level_form">
+                            <div id="custom_generation_error" class="error_text"></div>
+                            <div class="form-group form-inline row">
+                                <div class="col-xs-2">
+                                    <label for="level_lname">Name:</label>
                                 </div>
-                                <!-- size, min_number, max_number, ops, tgt_min, tgt_max, tgt_step, hasExactSol, mustUseAll, canGenerateTarget, timer -->
-                                <!-- Size and numbers params-->
-                                <div class="form-group form-inline row">
-                                    <div class="col-xs-2">
-                                        <label for="level_size">Size:</label>
-                                    </div>
-                                    <div class="col-xs-10">
-                                        <input class="form-control" type="number" value="" id="level_size" name="level_size"
-                                               placeholder="Number of numbers" min="2" max="6" required>
-                                    </div>
+                                <div class="col-xs-10">
+                                    <input class="form-control" type="text" value="" id="level_lname" name="level_lname"
+                                           maxlength="30" required>
                                 </div>
-                                <div class="form-group form-inline row">
-                                    <div class="col-xs-2">
-                                        <label for="level_min_number">Min:</label>
-                                    </div>
-                                    <div class="col-xs-3">
-                                        <input class="form-control" type="number" value="" id="level_min_number" name="level_min_number"
-                                               placeholder="Min" min="0" max="99" required>
-                                    </div>
-                                    <div class="col-xs-2">
-                                        <label for="level_max_number">Max:</label>
-                                    </div>
-                                    <div class="col-xs-3">
-                                        <input class="form-control" type="number" value="" id="level_max_number" name="level_max_number"
-                                               placeholder="Max" min="0" max="99" required>
-                                    </div>
+                            </div>
+                            <!-- size, min_number, max_number, ops, tgt_min, tgt_max, tgt_step, hasExactSol, mustUseAll, canGenerateTarget, timer -->
+                            <!-- Size and numbers params-->
+                            <div class="form-group form-inline row">
+                                <div class="col-xs-2">
+                                    <label for="level_size">Size:</label>
                                 </div>
-                                <div id="custom_number_error" class="error_text"></div>
-                                <!--Target params-->
-                                <div class="form-group form-inline row">
-                                    <div class="col-xs-2">
-                                        <label for="level_tgt_min">Target Min</label>
-                                    </div>
-                                    <div class="col-xs-2">
-                                        <input class="form-control" type="number" value="" id="level_tgt_min" name="level_tgt_min"
-                                               placeholder="Min" min="0" max="999" required>
-                                    </div>
-                                    <div class="col-xs-2">
-                                        <label for="level_tgt_max">Target Max:</label>
-                                    </div>
-                                    <div class="col-xs-2">
-                                        <input class="form-control" type="number" value="" id="level_tgt_max" name="level_tgt_max"
-                                               placeholder="Max" min="0" max="999" required>
-                                    </div>
-                                    <div class="col-xs-2">
-                                        <label for="level_tgt_step">Target step:</label>
-                                    </div>
-                                    <div class="col-xs-2">
-                                        <input class="form-control" type="number" value="" id="level_tgt_step" name="level_tgt_step"
-                                               placeholder="step" min="0" max="999" required>
-                                    </div>
+                                <div class="col-xs-10">
+                                    <input class="form-control" type="number" value="" id="level_size" name="level_size"
+                                           placeholder="Number of numbers" min="2" max="6" required>
                                 </div>
-                                <div id="custom_target_error" class="error_text"></div>
-                                <!--Operations-->
-                                Operations:
-                                <div class="form-group form-inline row">
+                            </div>
+                            <div id="custom_number_error" class="error_text"></div>
+                            <div class="form-group form-inline row">
+                                <div class="col-xs-3">
+                                    <label for="level_min_number">Min:</label>
+                                </div>
+                                <div class="col-xs-3">
+                                    <input class="form-control" type="number" value="" id="level_min_number" name="level_min_number"
+                                           placeholder="Min" min="0" max="99" required>
+                                </div>
+                                <div class="col-xs-3">
+                                    <label for="level_max_number">Max:</label>
+                                </div>
+                                <div class="col-xs-3">
+                                    <input class="form-control" type="number" value="" id="level_max_number" name="level_max_number"
+                                           placeholder="Max" min="0" max="99" required>
+                                </div>
+                            </div>
+                            <!--Target params-->
+                            <div id="custom_target_error" class="error_text"></div>
+                            <div class="form-group form-inline row">
+                                <div class="col-xs-3">
+                                    <label for="level_tgt_min">Target Min</label>
+                                </div>
+                                <div class="col-xs-3">
+                                    <input class="form-control" type="number" value="" id="level_tgt_min" name="level_tgt_min"
+                                           placeholder="Min" min="0" max="999" required>
+                                </div>
+                                <div class="col-xs-3">
+                                    <label for="level_tgt_max">Target Max:</label>
+                                </div>
+                                <div class="col-xs-3">
+                                    <input class="form-control" type="number" value="" id="level_tgt_max" name="level_tgt_max"
+                                           placeholder="Max" min="0" max="999" required>
+                                </div>
+                            </div>
+                            <div class="form-group form-inline row">
+                                <div class="col-xs-3">
+                                    <label for="level_tgt_step">Target step:</label>
+                                </div>
+                                <div class="col-xs-3">
+                                    <input class="form-control" type="number" value="" id="level_tgt_step" name="level_tgt_step"
+                                           placeholder="step" min="0" max="999" required>
+                                </div>
+                            </div>
+                            <!--Operations-->
+                            <div id="custom_operation_error" class="error_text"></div>
+                            <div class="form-group form-inline row">
+                                <div class="col-xs-4"><b>Operations: </b></div>
+                                <div class="col-xs-8">
                                     <label class="checkbox-inline"><input type="checkbox" id="ope+" value="+">+</label>
                                     <label class="checkbox-inline"><input type="checkbox" id="ope-" value="-">-</label>
                                     <label class="checkbox-inline"><input type="checkbox" id="opex" value="x">x</label>
                                     <label class="checkbox-inline"><input type="checkbox" id="ope/" value="/">/</label>
                                 </div>
-                                <div id="custom_operation_error" class="error_text"></div>
-                                <!-- Game options -->
-                                <label class="checkbox"><input type="checkbox" name="mustUseAll" id="level_mustUseAll" value=""> Must use all numbers</label>
-                                <label class="checkbox"><input type="checkbox" name="hasAlwaysSolution" id="level_hasExactSol" value=""> Has always a solution</label>
-                                <div class="form-group from-inline row">
-                                    <div class="col-xs-8">
-                                        <label for="level_timer">Score timer (seconds)</label>
-                                    </div>
-                                    <div class="col-xs-4">
-                                        <input class="form-control" type="number" value="" id="level_timer" name="level_timer"
-                                               min="1" max="99" required>
-                                    </div>
+                            </div>
+                            <!-- Game options -->
+                            <div class="container wrap">
+                                <label class="checkbox center-block"><input type="checkbox" name="mustUseAll" id="level_mustUseAll" value=""> Must use all numbers</label>
+                                <label class="checkbox center-block"><input type="checkbox" name="hasAlwaysSolution" id="level_hasExactSol" value=""> Has always a solution</label>
+                            </div>
+                            <div class="form-group form-inline row">
+                                <div class="col-xs-6">
+                                    <label for="level_timer">Score timer (seconds)</label>
                                 </div>
-                                <div class="container wrap">
-                                    <button type="submit" id="custom_level_btn" class="btn round btn-primary outline center-block"> OK </button>
+                                <div class="col-xs-6">
+                                    <input class="form-control" type="number" value="" id="level_timer" name="level_timer"
+                                           min="1" max="99" required>
                                 </div>
-                            </form>
-                        </div>
+                            </div>
+                            <div class="container wrap">
+                                <button type="button" id="reset_level_btn" class="btn round btn-danger outline center-block"> Reset </button>
+                                <button type="submit" id="custom_level_btn" class="btn round btn-primary outline center-block"> OK </button>
+                            </div>
+                        </form>
                     </div>
                     <div class="modal-footer">
                     </div>
@@ -226,13 +234,13 @@
                         <div class="container wrap">
                             <button type="button" class="outline center btn round btn-danger" id="start_challenge" data-dismiss="modal"> Challenge ! </button>
                             <br />
-                            <div class="modal_play_text"> 10 games chrono </div>
+                            <div class="modal_play_text"> Get the best score in 10 games chrono </div>
                         </div>
                         <hr />
                         <div class="container wrap">
                             <button type="button" class="outline center btn round btn-success btn-new" data-dismiss="modal"> Casual Game </button>
                             <br />
-                            <div class="modal_play_text"> No chrono, no score </div>
+                            <div class="modal_play_text"> Just playing with no time pressure </div>
                         </div>
                     </div>
                 </div>
@@ -358,7 +366,7 @@
             <div id="restart" class="container">
                 <div class="container text-center" id="play_buttons">
                     <button type="button" id="try_again" class="btn btn-small round btn-warning outline retry"> Retry </button>
-                    <button type="button" id="new_game_btn" class="btn btn-small round btn-success outline"> New Game </button>
+                    <button type="button" id="new_game_btn" class="btn btn-small round btn-success outline"> Challenge </button>
                     <button type="button" id="skip_btn" class="btn btn-small round btn-danger outline btn-new"> Skip </button>
                 </div>
                 <div id="level_bars" class="container text-center">
