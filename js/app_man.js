@@ -162,7 +162,7 @@ $(document).ready(function () {
 
     //Update level
     function updateLevel() {
-        level = $('.level_btn.selected').attr('value');
+        level = parseInt($('.level_btn.selected').attr('value'));
         sLevel = allLevels[level];
         setStorage('level', '', '', level);
     }
@@ -419,26 +419,36 @@ $(document).ready(function () {
     }
 
     var scoreFields = ['score', 'time', 'player_name'];
-    var customLevelIndex = [4];
     var hs_size = 10;
-    var addLevel = new GameLevel(0,"Easy easy Add", 4, 1, 9, "+", 1, 9, 1, true, false, false,5,"");
-    var easyLevel = new GameLevel(1,"Plus and Minus", 4, 3, 9, "+-", 1, 5, 1, true, false, false,5,"");
+    var addLevel = new GameLevel(0,"Easy easy Add", 4, 1, 9, "+", 1, 9, 1, true, false, false,2);
+    var easyLevel = new GameLevel(1,"Plus and Minus", 4, 3, 9, "+-", 1, 5, 1, true, false, false,3);
  //   var easyadvancedLevel = new GameLevel("Add and Subtract", 6, 0, 9, "+-", 1, 9, 1, true, true, true, 5);
-    var plusmultLevel = new GameLevel(2,"Multiply Master", 3, 2, 9, "+-x", 10, 81, 1, true, true, true, 5, "x");
-    var minusLevel = new GameLevel(3,"The Mysterious Mister Minus", 6, 1, 9, "-", 0, 9, 1, true, true, true, 5, "");
+    var plusmultLevel = new GameLevel(2,"Multiply Master", 3, 2, 9, "+-x", 10, 81, 1, true, true, true, 4, "x");
+    var minusLevel = new GameLevel(3,"The Mysterious Mister Minus", 6, 1, 9, "-", 0, 9, 1, true, true, true, 4);
     var minusmultLevel = new GameLevel(4,"Mister Minus and Multiply", 4, 1, 9, "-x", 2, 36, 2, true, true, true, 5,"x",true);
 
-    var mediumLevel = new GameLevel(5,"The Standard", 4, 1, 9, "+-x", 4, 48, 4, true, true, true, 10,"");
-    var divideLevel = new GameLevel(6,"The Divide Dandy", 5, 1, 9, "+x/", 1, 9, 1, true, true, true, 10,"");
+    var mediumLevel = new GameLevel(5,"The Standard", 4, 1, 9, "+-x", 4, 48, 4, true, true, true, 10);
+    var divideLevel = new GameLevel(6,"The Divide Dandy", 5, 1, 9, "+x/", 1, 9, 1, true, true, true, 10);
  //   var mediumadvancedLevel = new GameLevel("Medium Challenging", 5, 1, 9, "+-x", 3, 99, 3, false, true, true,10);
-    var twentyfourLevel = new GameLevel(7,"Make 24", 4, 1, 10, "+-x/", 24, 24, 1, true, true, true,10,"");
-    var challengingLevel = new GameLevel(8,"The Challenge", 4, 1, 10, "+-x/", 1, 99, 1, false, true, true,10,"");
-    var ultimateLevel = new GameLevel(9,"The Ultimate", 5, 1, 10, "+-x/", 1, 199, 1, false, true, true,12,"");
+    var twentyfourLevel = new GameLevel(7,"Make 24", 4, 1, 10, "+-x/", 24, 24, 1, true, true, true,10);
+    var challengingLevel = new GameLevel(8,"The Challenge", 4, 1, 10, "+-x/", 1, 99, 1, false, true, true,10);
+    var ultimateLevel = new GameLevel(9,"The Ultimate", 5, 1, 10, "+-x/", 1, 199, 1, false, true, true,12,"+-x/",true);
     var allLevels = [];
     allLevels.push(addLevel, easyLevel, plusmultLevel, minusLevel, minusmultLevel,
         mediumLevel, divideLevel, twentyfourLevel, challengingLevel, ultimateLevel);
-
-    // retrieve custom level params in localStorage and replace in the allLevels
+    allLevels.sort(function (a, b) {
+        return (a.index - b.index);   //sort in ascending order;
+    });
+    var defaultLevels = []; // record the levels if we want to reset custom levels later on.
+    // retrieve custom levels from local storage
+    for (var i = 0; i < allLevels.length; i++) {
+        defaultLevels.push(allLevels[i]);
+        if (allLevels[i].isCustom) {
+            var storedLevel = new GameLevel(i);
+            storedLevel.getLevel(allLevels[i]);
+            allLevels.splice(i, 1, storedLevel);
+        }
+    }
 
     var level = parseInt(getStorage('level','','',2));
     var sLevel = allLevels[level];
@@ -593,12 +603,9 @@ $(document).ready(function () {
         show_hs_modal();
     })
 
- //   $(document).on('click', '#custom_level_btn', function () {
-        // size, min_number, max_number, ops, tgt_min, tgt_max, tgt_step, hasExactSol, mustUseAll, canGenerateTarget, timer 
-        // optional: text game complexity
-
     $('#custom_level_form').on('submit', function (e) {
         var hasError = false;
+        var index = parseInt(level);
         // validate numbers
         var lname = $('#level_name').val();
         var size = parseInt($('#level_size').val());
@@ -657,8 +664,7 @@ $(document).ready(function () {
         var canGenerateTarget = mustUseAll;
         var timer = parseInt($('#level_timer').val());
         if (!hasError) {
-            // need to work with generic index
-            var newLevel = new GameLevel(4,lname, size, min_number, max_number, ops, tgt_min, tgt_max, tgt_step, hasExactSol, mustUseAll, canGenerateTarget, timer, ops, true);
+            var newLevel = new GameLevel(level,lname, size, min_number, max_number, ops, tgt_min, tgt_max, tgt_step, hasExactSol, mustUseAll, canGenerateTarget, timer, ops, true);
             var gameTest = new GameHandler(newLevel);
             if (gameTest.generateError.length > 0) {
                 $('#custom_generation_error').text(gameTest.generateError);
@@ -672,16 +678,17 @@ $(document).ready(function () {
                 // save params in localStorage, replace old one in the list, launch a game
                 $('#customLevelModal').modal('hide');
                 newLevel.setLevel();
-                allLevels.splice(4, 1, newLevel);
+                allLevels.splice(level, 1, newLevel);
                 createLevelBar(level_container1, allLevels, level, 0);
                 createLevelBar(level_container2, allLevels, level, 5);
                 initGame(gameTest);
                 e.preventDefault(); //no form submission
+                // optional: text game complexity
+
             }
             // TO DO
-            // load custom level at initiation
-            // manage several custom levels with indexation
             // when loading the custom form, load the current params as default
+            // add possibility to reset custom levels
         }
 
     });

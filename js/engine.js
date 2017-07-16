@@ -1,5 +1,6 @@
 var levelFields = ['lname', 'size', 'min_number', 'max_number', 'ops', 'tgt_min', 'tgt_max', 'tgt_step', 'hasExactSol', 'mustUseAll',
                     'CGTarget', 'timer', 'last_ops', 'isCustom'];
+var numlevelFields = [false, true, true,true, false, true,true,true, false,false,false,true,false,false];
 
 function string2readable(str, sep, sep2) {
     if (str.length < 2) {
@@ -36,7 +37,7 @@ function GameLevel(index, lname, size, min_number, max_number, ops, tgt_min, tgt
     this.size = size;
     this.ops = ops;
     this.last_ops = last_ops;
-    if (last_ops.length == 0) {
+    if (typeof last_ops === 'undefined') {
         this.last_ops = ops;
     }
     this.min_number = min_number;
@@ -54,6 +55,9 @@ function GameLevel(index, lname, size, min_number, max_number, ops, tgt_min, tgt
 GameLevel.prototype.getLevel = function (defaultLevel) {
     for (k in levelFields) {
         this[levelFields[k]] = getLStorage(this.index, levelFields[k], defaultLevel[levelFields[k]]);
+        if (numlevelFields[k]) {
+            this[levelFields[k]] = parseInt(this[levelFields[k]]);
+        }
     }
 }
 
