@@ -1,3 +1,6 @@
+var levelFields = ['lname', 'size', 'min_number', 'max_number', 'ops', 'tgt_min', 'tgt_max', 'tgt_step', 'hasExactSol', 'mustUseAll',
+                    'CGTarget', 'timer', 'last_ops', 'isCustom'];
+
 function string2readable(str, sep, sep2) {
     if (str.length < 2) {
         return str;
@@ -9,7 +12,26 @@ function string2readable(str, sep, sep2) {
     }
 }
 
-function GameLevel(lname, size, min_number, max_number, ops, tgt_min, tgt_max, tgt_step, hasExactSol, mustUseAll, canGenerateTarget, timer, last_ops,isCustom) {
+//f(index, key, default_value). Key is a level param
+function getLStorage(index, k, default_value) {
+    var key = index + "_" + k;
+    if (localStorage.getItem(key)) {
+        var value = localStorage.getItem(key);
+    } else {
+        var value = default_value;
+        localStorage.setItem(key, value);
+    }
+    return value;
+}
+
+//f(index, key, value). Key is a level param
+function setLStorage(index, k, v) {
+    var key = index + "_" + k;
+    localStorage.setItem(key, v);
+}
+
+function GameLevel(index, lname, size, min_number, max_number, ops, tgt_min, tgt_max, tgt_step, hasExactSol, mustUseAll, canGenerateTarget, timer, last_ops,isCustom) {
+    this.index=index;
     this.lname = lname;
     this.size = size;
     this.ops = ops;
@@ -29,6 +51,18 @@ function GameLevel(lname, size, min_number, max_number, ops, tgt_min, tgt_max, t
     this.isCustom =  isCustom || false;
 }
 
+GameLevel.prototype.getLevel = function (defaultLevel) {
+    for (k in levelFields) {
+        this[levelFields[k]] = getLStorage(this.index, levelFields[k], defaultLevel[levelFields[k]]);
+    }
+}
+
+GameLevel.prototype.setLevel = function () {
+    for (k in levelFields) {
+        setLStorage(this.index, levelFields[k], this[levelFields[k]]);
+    }
+}
+
 function GameHandler(gameLevel) {
     this.min_target = gameLevel.tgt_min;
     this.max_target = gameLevel.tgt_max;
@@ -39,7 +73,7 @@ function GameHandler(gameLevel) {
     this.size = gameLevel.size;
     this.hasExactSolution = gameLevel.hasExactSol;
     this.mustUseAll = gameLevel.mustUseAll;
-    this.CGTarget = gameLevel.canGenerateTarget;
+    this.CGTarget = gameLevel.CGTarget;
     this.Numbers = new Array(this.size);
     this.objNumbers = new Array(this.size);
     this.operations = gameLevel.ops.toString().split("");
@@ -75,24 +109,36 @@ GameHandler.prototype.generateRandomNumbers = function (min, max, step) {
 GameHandler.prototype.generateNumbers = function () {
     var trials_counter = 0;
     var trials_counter2 = 0;
+    var trials_counter3 = 0;
     var generateNumbersError = "";
     do {
         trials_counter++;
-        this.target = this.generateRandomNumbers(this.min_target, this.max_target, this.step_target);
-        for (var i = 0; i < this.size; i++) {
-            trials_counter2 = 0;
-            do {
-                this.Numbers[i] = this.generateRandomNumbers(this.min_number, this.max_number, 1);
-                trials_counter2++;
-                if (trials_counter2 > 100) {
-                    //raise error
-                    generateNumbersError="Can not generate the initial numbers.";
-                    break;
+        trials_counter2 = 0;
+        do {    //loop on target generation
+            this.target = this.generateRandomNumbers(this.min_target, this.max_target, this.step_target);
+            genTest = true;
+            for (var i = 0; i < this.size; i++) {
+                trials_counter3 = 0;
+                do {    //loop on numbers generation
+                    this.Numbers[i] = this.generateRandomNumbers(this.min_number, this.max_number, 1);
+                    trials_counter3++;
+                    if (trials_counter3 > 20) {
+                        generateNumbersError = "Can not generate numbers different from the target. Please modify numbers parameters.";
+                        genTest = false;
+                        break;
+                    }
                 }
+                while (!this.CGTarget && this.Numbers[i] === this.target);
+                this.objNumbers[i] = new ObjNumber(this.Numbers[i], this.Numbers[i].toString());
             }
-            while (!this.CGTarget && this.Numbers[i] === this.target);
-            this.objNumbers[i] = new ObjNumber(this.Numbers[i], this.Numbers[i].toString());
+            trials_counter2++;
+            if (trials_counter2 > 10) {
+                generateNumbersError = "Can not generate numbers different from the target. Please modify numbers parameters.";
+                break;
+            }
         }
+        while (!this.CGTarget && !genTest)
+
         this.foundSol = false;
         this.listOfSolutions = [];
         this.bestSolution = [];
@@ -106,7 +152,7 @@ GameHandler.prototype.generateNumbers = function () {
 
         if (trials_counter > 100) {
             //raise error
-            generateNumbersError = "Can not generate a game with solution.";
+            generateNumbersError = "Can not generate a game with solution. Please modify parameters.";
             break;
         }
     }

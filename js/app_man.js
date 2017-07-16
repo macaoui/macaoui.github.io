@@ -45,13 +45,13 @@ function actuateOperands(nOper) {
 
 function createLevelBar(ctn,allLevels,level, start_index) {
     ctn.empty();
-    for (i = start_index; i < start_index+5; i++) {
-        lev = allLevels[i];
-        var selected_text= i===level? 'selected':'';
+    for (var i = start_index; i < start_index+5; i++) {
+        var lev = allLevels[i];
+        var selected_text= i===parseInt(level)? 'selected':'';
         var operation_text = lev.ops.length === 1 ? "Operation: only " + lev.ops : "Operations: " + string2readable(lev.ops,", ","and");
         var allnum_text = lev.mustUseAll ? 'Must use all numbers ' : 'Do not have to use all numbers ';
         var sol_text = lev.hasExactSol ? 'Always a solution ' : 'Not always a solution ';
-        text = '<div class="btn-group" role="group">' +
+        var text = '<div class="btn-group" role="group">' +
                                 '<button type="button" class="level_btn btn round btn-default '+ selected_text+'"' +
                                         'value=' + parseInt(i) + ' info="' +
                                          operation_text + ' <br>' +
@@ -89,6 +89,24 @@ function operate(a, b, oper) {
 function isValid(c) {
     return (c >= 0 && Math.abs(c - Math.round(c)) < 0.000001);
 };
+
+//f(gameLevel, ranking, key). Key can be score, time, player_name
+function getStorage(lname, rank, k, default_value) {
+    var key = lname + "_" + rank + "_" + k;
+    if (localStorage.getItem(key)) {
+        var value = localStorage.getItem(key);
+    } else {
+        var value = default_value;
+        localStorage.setItem(key, value);
+    }
+    return value;
+}
+
+//f(gameLevel, ranking, key, value). Key would be score, time, player_name
+function setStorage(lname, rank, k, v) {
+    var key = lname + "_" + rank + "_" + k;
+    localStorage.setItem(key, v);
+}
 
 // Convert time in milliseconds in a text string with minutes and seconds.
 function display_time(t) {
@@ -142,29 +160,18 @@ $(document).ready(function () {
         hint_b.fadeIn(1500);
     }
 
+    //Update level
+    function updateLevel() {
+        level = $('.level_btn.selected').attr('value');
+        sLevel = allLevels[level];
+        setStorage('level', '', '', level);
+    }
+
     //Score management
     function updateScore() {
         stopGameTimer();
         totalScore = totalScore + parseInt($('#current_score').text())
         $('#total_score').text(totalScore);
-    }
-
-    //f(gameLevel, ranking, key). Key can be score, time, player_name
-    function getStorage(lname, rank,k) {
-        var key = lname +"_" +rank+"_" +k;
-        if (localStorage.getItem(key)) {
-            var value = localStorage.getItem(key);
-        } else {
-            var value = 0;
-            localStorage.setItem(key,value);
-        }
-        return value;
-    }
-
-    //f(gameLevel, ranking, key, value). Key would be score, time, player_name
-    function setStorage(lname, rank, k,v) {
-        var key = lname + "_" + rank + "_" + k;
-        localStorage.setItem(key, v);
     }
 
     //Score object
@@ -179,7 +186,7 @@ $(document).ready(function () {
     Score.prototype.getScore = function () {
         for (var j = 0; j < scoreFields.length; j++) {
             var key = scoreFields[j];
-            this[key] = getStorage(this.lname, this.rank, key);
+            this[key] = getStorage(this.lname, this.rank, key,0);
         }
     };
 
@@ -331,7 +338,7 @@ $(document).ready(function () {
         challengeStatus = true;
         gamesPlayed = 0;
         totalScore = 0;
-        highScore = parseInt(getStorage(sLevel.lname,1,'score'));
+        highScore = parseInt(getStorage(sLevel.lname,1,'score',0));
         $('#high_score').text(highScore);
         $('#total_score').text(totalScore);
         timeStart = Date.now();
@@ -343,7 +350,7 @@ $(document).ready(function () {
         challengeStatus = false;
         gamesPlayed = 0;
         var gameScore = new Score(sLevel.lname, 999, totalScore, timeChrono, 'NEW');
-        msg = "<small> You just got " + totalScore + " points in " + display_time(timeChrono) + "</small><br>";
+        msg = "<small> You got " + totalScore + " points in " + display_time(timeChrono) + "</small><br>";
         totalScore = 0;
         $('#high_score').text(highScore);
         $('#total_score').text('_');
@@ -380,9 +387,9 @@ $(document).ready(function () {
         var footer = "</table>";
         var table_body = "";
         for (i = 1; i <= hs_size; i++) {
-            var time_txt = display_time(parseInt(getStorage(sLevel.lname, i,'time')));
-            table_body += "<tr><td>" + i + "</td><td>" + getStorage(sLevel.lname, i,'player_name') +
-                        "</td><td>" + getStorage(sLevel.lname,i, 'score') + "</td><td>" + time_txt + "</td></tr>"
+            var time_txt = display_time(parseInt(getStorage(sLevel.lname, i,'time', 0)));
+            table_body += "<tr><td>" + i + "</td><td>" + getStorage(sLevel.lname, i,'player_name','None') +
+                        "</td><td>" + getStorage(sLevel.lname,i, 'score',0) + "</td><td>" + time_txt + "</td></tr>"
         }
         $('#hs_table').empty();
         $('#hs_table').append(header + table_body + footer);
@@ -391,43 +398,49 @@ $(document).ready(function () {
 
     function updateInfo() {
         ctn = $('.level_btn.selected');
-        level = ctn.attr('value');
+        updateLevel();
         lev_info = ctn.attr('info');
         lev_title = ctn.attr('title');
         $('#info_display').attr('data-content', lev_info);
         $('#info_display').attr('data-original-title', lev_title);
         $('#display_level').text('Level: ' + lev_title + ' ');
-        sLevel = allLevels[level];
         if (sLevel.isCustom) {
             $('#custom_link').show();
         }
         else {
             $('#custom_link').hide();
         }
-        highScore = parseInt(getStorage(sLevel.lname,1,'score'));
+        highScore = parseInt(getStorage(sLevel.lname,1,'score',0));
         $('#high_score').text(highScore);
     }
 
-    var scoreFields = ['score', 'time', 'player_name'];
-    var hs_size = 10;
-    var addLevel = new GameLevel("Easy easy Add", 4, 1, 9, "+", 1, 9, 1, true, false, false,5,"");
-    var easyLevel = new GameLevel("Plus and Minus", 4, 3, 9, "+-", 1, 5, 1, true, false, false,5,"");
- //   var easyadvancedLevel = new GameLevel("Add and Subtract", 6, 0, 9, "+-", 1, 9, 1, true, true, true, 5);
-    var plusmultLevel = new GameLevel("Multiply Master", 3, 2, 9, "+-x", 10, 81, 1, true, true, true, 5, "x");
-    var minusLevel = new GameLevel("The Mysterious Mister Minus", 6, 1, 9, "-", 0, 9, 1, true, true, true, 5, "");
-    var minusmultLevel = new GameLevel("Mister Minus and Multiply", 4, 1, 9, "-x", 2, 36, 2, true, true, true, 5,"x",true);
+    function check(e) {
+        return document.getElementById(e).checked;
+    }
 
-    var mediumLevel = new GameLevel("The Standard", 4, 1, 9, "+-x", 4, 48, 4, true, true, true, 10,"");
-    var divideLevel = new GameLevel("The Divide Dandy", 5, 1, 9, "+x/", 1, 9, 1, true, true, true, 10,"");
+    var scoreFields = ['score', 'time', 'player_name'];
+    var customLevelIndex = [4];
+    var hs_size = 10;
+    var addLevel = new GameLevel(0,"Easy easy Add", 4, 1, 9, "+", 1, 9, 1, true, false, false,5,"");
+    var easyLevel = new GameLevel(1,"Plus and Minus", 4, 3, 9, "+-", 1, 5, 1, true, false, false,5,"");
+ //   var easyadvancedLevel = new GameLevel("Add and Subtract", 6, 0, 9, "+-", 1, 9, 1, true, true, true, 5);
+    var plusmultLevel = new GameLevel(2,"Multiply Master", 3, 2, 9, "+-x", 10, 81, 1, true, true, true, 5, "x");
+    var minusLevel = new GameLevel(3,"The Mysterious Mister Minus", 6, 1, 9, "-", 0, 9, 1, true, true, true, 5, "");
+    var minusmultLevel = new GameLevel(4,"Mister Minus and Multiply", 4, 1, 9, "-x", 2, 36, 2, true, true, true, 5,"x",true);
+
+    var mediumLevel = new GameLevel(5,"The Standard", 4, 1, 9, "+-x", 4, 48, 4, true, true, true, 10,"");
+    var divideLevel = new GameLevel(6,"The Divide Dandy", 5, 1, 9, "+x/", 1, 9, 1, true, true, true, 10,"");
  //   var mediumadvancedLevel = new GameLevel("Medium Challenging", 5, 1, 9, "+-x", 3, 99, 3, false, true, true,10);
-    var twentyfourLevel = new GameLevel("Make 24", 4, 1, 10, "+-x/", 24, 24, 1, true, true, true,10,"");
-    var challengingLevel = new GameLevel("The Challenge", 4, 1, 10, "+-x/", 1, 99, 1, false, true, true,10,"");
-    var ultimateLevel = new GameLevel("The Ultimate", 5, 1, 10, "+-x/", 1, 199, 1, false, true, true,12,"");
+    var twentyfourLevel = new GameLevel(7,"Make 24", 4, 1, 10, "+-x/", 24, 24, 1, true, true, true,10,"");
+    var challengingLevel = new GameLevel(8,"The Challenge", 4, 1, 10, "+-x/", 1, 99, 1, false, true, true,10,"");
+    var ultimateLevel = new GameLevel(9,"The Ultimate", 5, 1, 10, "+-x/", 1, 199, 1, false, true, true,12,"");
     var allLevels = [];
     allLevels.push(addLevel, easyLevel, plusmultLevel, minusLevel, minusmultLevel,
         mediumLevel, divideLevel, twentyfourLevel, challengingLevel, ultimateLevel);
+
     // retrieve custom level params in localStorage and replace in the allLevels
-    var level = 2;
+
+    var level = parseInt(getStorage('level','','',2));
     var sLevel = allLevels[level];
     var gameHandler = new GameHandler(sLevel);
     var level_container1 = $('#select_container');
@@ -505,8 +518,7 @@ $(document).ready(function () {
         if (!challengeStatus) {
             $('.level_btn').removeClass('selected');
             $(this).addClass('selected');
-            level = $('.level_btn.selected').attr('value');
-            sLevel = allLevels[level];
+            updateLevel();
             gameHandler = new GameHandler(sLevel);
             initGame(gameHandler);
         }
@@ -522,12 +534,10 @@ $(document).ready(function () {
 
     $(document).on('click', '.btn-new', function () {
         $('#playModal').modal('hide');
-        level = $('.level_btn.selected').attr('value');
-        sLevel = allLevels[level];
+        updateLevel();
         gameHandler = new GameHandler(sLevel);
         if (challengeStatus) {
             gamesPlayed++;
-           // alert("Game skipped.");
             $('#tt_skip').tooltip("show");
             setTimeout(function () {
                 $('#tt_skip').tooltip("hide");
@@ -562,8 +572,7 @@ $(document).ready(function () {
 
     $(document).on('click', '#start_challenge', function () {
         $('#playModal').modal('hide');
-        level = $('.level_btn.selected').attr('value');
-        sLevel = allLevels[level];
+        updateLevel();
         gameHandler = new GameHandler(sLevel);
         startChallenge();
         initGame(gameHandler);
@@ -584,18 +593,99 @@ $(document).ready(function () {
         show_hs_modal();
     })
 
-    $(document).on('click', '#custom_level_btn', function () {
+ //   $(document).on('click', '#custom_level_btn', function () {
         // size, min_number, max_number, ops, tgt_min, tgt_max, tgt_step, hasExactSol, mustUseAll, canGenerateTarget, timer 
-        //validate min_number <= max_nuber
-        //validate min_yarget<=max_target
-        //validate at least one op selected (or use radio box and multiple)
-        //validate game can be generated
-        //if invalid stay on modal with an error message
-        // else close modal, create GameLevel Object, save params in localStorage, replace old one in the list, launch a game
-        var min = document.getElementById("name_input").value;
-        setStorage(sLevel.lname, ranking, 'player_name', nameValue);
-        show_hs_modal();
-    })
+        // optional: text game complexity
+
+    $('#custom_level_form').on('submit', function (e) {
+        var hasError = false;
+        // validate numbers
+        var lname = $('#level_name').val();
+        var size = parseInt($('#level_size').val());
+        var min_number = parseInt($('#level_min_number').val());
+        var max_number = parseInt($('#level_max_number').val());
+        if (min_number > max_number) {
+            hasError = true;
+            $('#custom_number_error').text('Minimum shall be inferior to Maximum');
+            $('#level_min_number').closest('.form-group').addClass('has-error');
+            e.preventDefault(); //stop form submission
+        } else {
+            $('#custom_number_error').text('');
+            $('#level_min_number').closest('.form-group').removeClass('has-error');
+        }
+        // vaidate targets
+        var tgt_min = parseInt($('#level_tgt_min').val());
+        var tgt_max = parseInt($('#level_tgt_max').val());
+        var tgt_step = parseInt($('#level_tgt_step').val());
+
+        if (tgt_min > tgt_max) {
+            hasError = true;
+            $('#custom_target_error').text('Minimum shall be inferior to Maximum');
+            $('#level_tgt_min').closest('.form-group').addClass('has-error');
+            e.preventDefault(); //stop form submission
+        } else {
+            $('#custom_target_error').text('');
+            $('#level_tgt_min').closest('.form-group').removeClass('has-error');
+        }
+        //validate operations
+        var ops = '';
+        if (check('opePlus')) {
+            ops += '+';
+        }
+        if (check('opeMinus')) {
+            ops += '-';
+        }
+        if (check('opeMultiply')) {
+            ops += 'x';
+        }
+        if (check('opeDivide')) {
+            ops += '/';
+        }
+
+        if (ops.length === 0) {
+            hasError = true;
+            $('#custom_operation_error').text('Select at least one operation');
+            $('#opePlus').closest('.form-group').addClass('has-error');
+            e.preventDefault(); //stop form submission
+        } else {
+            $('#custom_operation_error').text('');
+            $('#opePlus').closest('.form-group').removeClass('has-error');
+        }
+        //record other params and test if game can be generated
+        var hasExactSol = check('hasAlwaysSolution');
+        var mustUseAll = check('mustUseAll');
+        var canGenerateTarget = mustUseAll;
+        var timer = parseInt($('#level_timer').val());
+        if (!hasError) {
+            // need to work with generic index
+            var newLevel = new GameLevel(4,lname, size, min_number, max_number, ops, tgt_min, tgt_max, tgt_step, hasExactSol, mustUseAll, canGenerateTarget, timer, ops, true);
+            var gameTest = new GameHandler(newLevel);
+            if (gameTest.generateError.length > 0) {
+                $('#custom_generation_error').text(gameTest.generateError);
+                $('#level_min_number').closest('.form-group').addClass('has-error');
+                $('#level_tgt_min').closest('.form-group').addClass('has-error');
+                e.preventDefault(); //stop form submission
+            } else {
+                $('#custom_generation_error').text('');
+                $('#level_min_number').closest('.form-group').removeClass('has-error');
+                $('#level_tgt_min').closest('.form-group').removeClass('has-error');
+                // save params in localStorage, replace old one in the list, launch a game
+                $('#customLevelModal').modal('hide');
+                newLevel.setLevel();
+                allLevels.splice(4, 1, newLevel);
+                createLevelBar(level_container1, allLevels, level, 0);
+                createLevelBar(level_container2, allLevels, level, 5);
+                initGame(gameTest);
+                e.preventDefault(); //no form submission
+            }
+            // TO DO
+            // load custom level at initiation
+            // manage several custom levels with indexation
+            // when loading the custom form, load the current params as default
+        }
+
+    });
+
 
     //correct bug on popover which needed to be clicked twice
     $('#info_display').on('hidden.bs.popover', function (e) {

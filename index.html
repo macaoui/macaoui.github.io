@@ -49,7 +49,7 @@
     <div class="container">
 
         <!-- Modal Level Customization -->
-        <div class="modal fade" id="customLevelModal" role="dialog">
+        <div class="modal fade" id="customLevelModal" role="dialog" data-keyboard="false" data-backdrop="static">
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header">
@@ -59,8 +59,9 @@
                         <div id="custom_level_text" class="display_text">
                             Make your own level:
                         </div>
-                        <div id="custom_level_form">
-                            <form>
+                        <div id="">
+                            <form name="custom_level_form" id="custom_level_form">
+                                <div id="custom_generation_error" class="error_text"></div>
                                 <div class="form-group form-inline row">
                                     <div class="col-xs-2">
                                         <label for="level_name">Name:</label>
@@ -72,7 +73,7 @@
                                 </div>
                                 <!-- size, min_number, max_number, ops, tgt_min, tgt_max, tgt_step, hasExactSol, mustUseAll, canGenerateTarget, timer -->
                                 <!-- Size and numbers params-->
-                                <div class="form-group from-inline row">
+                                <div class="form-group form-inline row">
                                     <div class="col-xs-2">
                                         <label for="level_size">Size:</label>
                                     </div>
@@ -81,37 +82,38 @@
                                                placeholder="Number of numbers" min="2" max="6" required>
                                     </div>
                                 </div>
-                                <div class="form-group from-inline row">
+                                <div class="form-group form-inline row">
                                     <div class="col-xs-2">
                                         <label for="level_min_number">Min:</label>
                                     </div>
                                     <div class="col-xs-3">
                                         <input class="form-control" type="number" value="" id="level_min_number" name="level_min_number"
-                                               placeholder="Minimum" min="0" max="99" required>
+                                               placeholder="Min" min="0" max="99" required>
                                     </div>
                                     <div class="col-xs-2">
                                         <label for="level_max_number">Max:</label>
                                     </div>
                                     <div class="col-xs-3">
                                         <input class="form-control" type="number" value="" id="level_max_number" name="level_max_number"
-                                               placeholder="Maximum" min="0" max="99" required>
+                                               placeholder="Max" min="0" max="99" required>
                                     </div>
                                 </div>
+                                <div id="custom_number_error" class="error_text"></div>
                                 <!--Target params-->
-                                <div class="form-group from-inline row">
+                                <div class="form-group form-inline row">
                                     <div class="col-xs-2">
                                         <label for="level_tgt_min">Target Min</label>
                                     </div>
                                     <div class="col-xs-2">
                                         <input class="form-control" type="number" value="" id="level_tgt_min" name="level_tgt_min"
-                                               placeholder="Minimum" min="0" max="99" required>
+                                               placeholder="Min" min="0" max="99" required>
                                     </div>
                                     <div class="col-xs-2">
                                         <label for="level_tgt_max">Target Max:</label>
                                     </div>
                                     <div class="col-xs-2">
                                         <input class="form-control" type="number" value="" id="level_tgt_max" name="level_tgt_max"
-                                               placeholder="Maximum" min="0" max="99" required>
+                                               placeholder="Max" min="0" max="99" required>
                                     </div>
                                     <div class="col-xs-2">
                                         <label for="level_tgt_step">Target step:</label>
@@ -121,14 +123,16 @@
                                                placeholder="step" min="0" max="99" required>
                                     </div>
                                 </div>
+                                <div id="custom_target_error" class="error_text"></div>
                                 <!--Operations-->
-                                <div class="form-group from-inline row">
-                                    Operations:
-                                    <label class="checkbox-inline"><input type="checkbox" name="opePlus" id="opePlus" value="" checked>+</label>
-                                    <label class="checkbox-inline"><input type="checkbox" name="opeMinus" id="opeMinus" value="">-</label>
-                                    <label class="checkbox-inline"><input type="checkbox" name="opeMultiply" id="opeMinus" value="">x</label>
-                                    <label class="checkbox-inline"><input type="checkbox" name="opeDivide" id="opeMinus" value="">/</label>
+                                Operations:
+                                <div class="form-group form-inline row">
+                                    <label class="checkbox-inline"><input type="checkbox" id="opePlus" value="+">+</label>
+                                    <label class="checkbox-inline"><input type="checkbox" id="opeMinus" value="-">-</label>
+                                    <label class="checkbox-inline"><input type="checkbox" id="opeMultiply" value="x">x</label>
+                                    <label class="checkbox-inline"><input type="checkbox" id="opeDivide" value="/">/</label>
                                 </div>
+                                <div id="custom_operation_error" class="error_text"></div>
                                 <!-- Game options -->
                                 <label class="checkbox"><input type="checkbox" name="mustUseAll" id="mustUseAll" value=""> Must use all numbers</label>
                                 <label class="checkbox"><input type="checkbox" name="hasAlwaysSolution" id="hasAlwaysSolution" value=""> Has always a solution</label>
@@ -139,17 +143,11 @@
                                     <div class="col-xs-4">
                                         <input class="form-control" type="number" value="" id="level_timer" name="level_timer"
                                                min="1" max="99" required>
-                                        <span class="help-block">Number of seconds to decrease score by 1 point</span>
                                     </div>
+                                    <span class="help-block">Number of seconds to decrease score by 1 point</span>
                                 </div>
                                 <div class="container wrap">
                                     <button type="submit" id="custom_level_btn" class="btn round btn-primary outline center-block"> OK </button>
-                                    <!--Validation of the input
-                                    Max shall be above min
-                                    At least one operation shall be selected
-                                    [Optional: test game complexity]
-                                    Test level can generate numbers and solution
-                                    -->
                                 </div>
                             </form>
                         </div>
@@ -374,7 +372,9 @@
             </div>
             <div id="display_level_container" class="display_level_container wrap">
                 <div id="display_level" class="display_text center-block">Level: </div>
-                <div id="custom_link" class="center-block"><a href="#" data-toggle="modal" data-target="#customLevelModal">[Custom]</a> </div>
+                <div id="custom_link" class="center-block">
+                    <a href="#" data-toggle="modal" data-target="#customLevelModal" data-backdrop="static">[Custom]</a>
+                </div>
                 <span id="info_display" class="glyphicon glyphicon-info-sign center-block"
                       data-toggle="popover" data-content="" data-html="true" data-placement="bottom"></span>
             </div>
