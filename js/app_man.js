@@ -1,6 +1,7 @@
 ﻿var num_container = $('#numbers_container');
 var ope_container = $('#operands_container');
-
+var formLevelFields = ['lname', 'size', 'min_number', 'max_number', 'tgt_min', 'tgt_max', 'tgt_step', 'timer'];
+var booleanLevelFields = ['hasExactSol', 'mustUseAll'];
 // create an number object with order attribute
 function NumberObject(value, order, selected) {
     this.value = parseInt(value);
@@ -439,7 +440,7 @@ $(document).ready(function () {
     allLevels.sort(function (a, b) {
         return (a.index - b.index);   //sort in ascending order;
     });
-    var defaultLevels = []; // record the levels if we want to reset custom levels later on.
+    var defaultLevels = []; // record the levels to be able to reset custom levels later on.
     // retrieve custom levels from local storage
     for (var i = 0; i < allLevels.length; i++) {
         defaultLevels.push(allLevels[i]);
@@ -603,11 +604,29 @@ $(document).ready(function () {
         show_hs_modal();
     })
 
+    // when loading the custom level form, load the current params as default
+    $('#customLevelModal').on('shown.bs.modal', function () {
+        for (var k in formLevelFields) {
+            var f = formLevelFields[k];
+            document.getElementById('level_'+f).value= sLevel[f];
+        }
+        for (var k in booleanLevelFields) {
+            var f = booleanLevelFields[k];
+            document.getElementById('level_' + f).checked=sLevel[f];
+        }
+        var operations = sLevel['ops'].toString().split("");
+        while (operations.length > 0) {
+            f = operations.slice(-1);
+            document.getElementById('ope' + f).checked= true;
+            operations = operations.slice(0, -1);
+        }
+    })
+
     $('#custom_level_form').on('submit', function (e) {
         var hasError = false;
         var index = parseInt(level);
         // validate numbers
-        var lname = $('#level_name').val();
+        var lname = $('#level_lname').val();
         var size = parseInt($('#level_size').val());
         var min_number = parseInt($('#level_min_number').val());
         var max_number = parseInt($('#level_max_number').val());
@@ -636,16 +655,16 @@ $(document).ready(function () {
         }
         //validate operations
         var ops = '';
-        if (check('opePlus')) {
+        if (check('ope+')) {
             ops += '+';
         }
-        if (check('opeMinus')) {
+        if (check('ope-')) {
             ops += '-';
         }
-        if (check('opeMultiply')) {
+        if (check('opex')) {
             ops += 'x';
         }
-        if (check('opeDivide')) {
+        if (check('ope/')) {
             ops += '/';
         }
 
@@ -659,8 +678,8 @@ $(document).ready(function () {
             $('#opePlus').closest('.form-group').removeClass('has-error');
         }
         //record other params and test if game can be generated
-        var hasExactSol = check('hasAlwaysSolution');
-        var mustUseAll = check('mustUseAll');
+        var hasExactSol = check('level_hasExactSol');
+        var mustUseAll = check('level_mustUseAll');
         var canGenerateTarget = mustUseAll;
         var timer = parseInt($('#level_timer').val());
         if (!hasError) {
@@ -687,12 +706,10 @@ $(document).ready(function () {
 
             }
             // TO DO
-            // when loading the custom form, load the current params as default
             // add possibility to reset custom levels
         }
 
     });
-
 
     //correct bug on popover which needed to be clicked twice
     $('#info_display').on('hidden.bs.popover', function (e) {

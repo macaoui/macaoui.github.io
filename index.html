@@ -64,10 +64,10 @@
                                 <div id="custom_generation_error" class="error_text"></div>
                                 <div class="form-group form-inline row">
                                     <div class="col-xs-2">
-                                        <label for="level_name">Name:</label>
+                                        <label for="level_lname">Name:</label>
                                     </div>
                                     <div class="col-xs-10">
-                                        <input class="form-control" type="text" value="" id="level_name" name="level_name"
+                                        <input class="form-control" type="text" value="" id="level_lname" name="level_lname"
                                                placeholder="Level name" maxlength="30" required>
                                     </div>
                                 </div>
@@ -106,36 +106,36 @@
                                     </div>
                                     <div class="col-xs-2">
                                         <input class="form-control" type="number" value="" id="level_tgt_min" name="level_tgt_min"
-                                               placeholder="Min" min="0" max="99" required>
+                                               placeholder="Min" min="0" max="999" required>
                                     </div>
                                     <div class="col-xs-2">
                                         <label for="level_tgt_max">Target Max:</label>
                                     </div>
                                     <div class="col-xs-2">
                                         <input class="form-control" type="number" value="" id="level_tgt_max" name="level_tgt_max"
-                                               placeholder="Max" min="0" max="99" required>
+                                               placeholder="Max" min="0" max="999" required>
                                     </div>
                                     <div class="col-xs-2">
                                         <label for="level_tgt_step">Target step:</label>
                                     </div>
                                     <div class="col-xs-2">
                                         <input class="form-control" type="number" value="" id="level_tgt_step" name="level_tgt_step"
-                                               placeholder="step" min="0" max="99" required>
+                                               placeholder="step" min="0" max="999" required>
                                     </div>
                                 </div>
                                 <div id="custom_target_error" class="error_text"></div>
                                 <!--Operations-->
                                 Operations:
                                 <div class="form-group form-inline row">
-                                    <label class="checkbox-inline"><input type="checkbox" id="opePlus" value="+">+</label>
-                                    <label class="checkbox-inline"><input type="checkbox" id="opeMinus" value="-">-</label>
-                                    <label class="checkbox-inline"><input type="checkbox" id="opeMultiply" value="x">x</label>
-                                    <label class="checkbox-inline"><input type="checkbox" id="opeDivide" value="/">/</label>
+                                    <label class="checkbox-inline"><input type="checkbox" id="ope+" value="+">+</label>
+                                    <label class="checkbox-inline"><input type="checkbox" id="ope-" value="-">-</label>
+                                    <label class="checkbox-inline"><input type="checkbox" id="opex" value="x">x</label>
+                                    <label class="checkbox-inline"><input type="checkbox" id="ope/" value="/">/</label>
                                 </div>
                                 <div id="custom_operation_error" class="error_text"></div>
                                 <!-- Game options -->
-                                <label class="checkbox"><input type="checkbox" name="mustUseAll" id="mustUseAll" value=""> Must use all numbers</label>
-                                <label class="checkbox"><input type="checkbox" name="hasAlwaysSolution" id="hasAlwaysSolution" value=""> Has always a solution</label>
+                                <label class="checkbox"><input type="checkbox" name="mustUseAll" id="level_mustUseAll" value=""> Must use all numbers</label>
+                                <label class="checkbox"><input type="checkbox" name="hasAlwaysSolution" id="level_hasExactSol" value=""> Has always a solution</label>
                                 <div class="form-group from-inline row">
                                     <div class="col-xs-8">
                                         <label for="level_timer">Score timer (seconds)</label>
@@ -144,7 +144,6 @@
                                         <input class="form-control" type="number" value="" id="level_timer" name="level_timer"
                                                min="1" max="99" required>
                                     </div>
-                                    <span class="help-block">Number of seconds to decrease score by 1 point</span>
                                 </div>
                                 <div class="container wrap">
                                     <button type="submit" id="custom_level_btn" class="btn round btn-primary outline center-block"> OK </button>
