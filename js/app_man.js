@@ -351,7 +351,7 @@ $(document).ready(function () {
         challengeStatus = false;
         gamesPlayed = 0;
         var gameScore = new Score(sLevel.lname, 999, totalScore, timeChrono, 'NEW');
-        msg = "<small> You got " + totalScore + " points in " + display_time(timeChrono) + "</small><br>";
+        var msg = "<small><b> *** You got " + totalScore + " points in " + display_time(timeChrono) + " ***</b></small><br>";
         totalScore = 0;
         $('#high_score').text(highScore);
         $('#total_score').text('_');
@@ -374,7 +374,8 @@ $(document).ready(function () {
 
     //Show input_name_modal if the player enter in the high scores
     function show_input_name_modal(ranking) {
-        $('#input_name_text').text('Congratulations, you have reached rank no ' + ranking+ ' !');
+        $('#input_name_text').empty();
+        $('#input_name_text').append('<b>Congratulations!!! <br> You have reached rank no ' + ranking+ ' !</b>');
         $('#name_input').attr('ranking', ranking);
         document.getElementById("name_input").value='';
         $('#inputNameModal').modal('show');
@@ -382,7 +383,7 @@ $(document).ready(function () {
 
     //Show high-score at end of a challenge or when requested 
     function show_hs_modal() {
-        $('#hs_text').append('High Score - ' + sLevel.lname);
+        $('#hs_text').append('<b>High Score </b> <br> ' + sLevel.lname);
         var header = "<table class='table table-striped'>" +
             "<tr><th>#</th><th>Name</th><th>Score</th><th>Time</th></tr>";
         var footer = "</table>";
