@@ -403,9 +403,10 @@ $(document).ready(function () {
         updateLevel();
         lev_info = ctn.attr('info');
         lev_title = ctn.attr('title');
+        lev_num= parseInt(ctn.attr('value'))+1;
         $('#info_display').attr('data-content', lev_info);
         $('#info_display').attr('data-original-title', lev_title);
-        $('#display_level').text('Level: ' + lev_title + ' ');
+        $('#display_level').text('Level ' + lev_num +': ' + lev_title + ' ');
         if (sLevel.isCustom) {
             $('#custom_link').show();
         }
