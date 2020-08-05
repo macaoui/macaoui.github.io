@@ -111,56 +111,38 @@ GameHandler.prototype.generateRandomNumbers = function (min, max, step) {
 
 //generate a new Numbers set and list all solutions.
 GameHandler.prototype.generateNumbers = function () {
-    var trials_counter = 0;
-    var trials_counter2 = 0;
-    var trials_counter3 = 0;
     var generateNumbersError = "";
-    do {
-        trials_counter++;
-        trials_counter2 = 0;
-        do {    //loop on target generation
-            this.target = this.generateRandomNumbers(this.min_target, this.max_target, this.step_target);
-            genTest = true;
-            for (var i = 0; i < this.size; i++) {
-                trials_counter3 = 0;
-                do {    //loop on numbers generation
-                    this.Numbers[i] = this.generateRandomNumbers(this.min_number, this.max_number, 1);
-                    trials_counter3++;
-                    if (trials_counter3 > 20) {
-                        generateNumbersError = "Can not generate numbers different from the target. Please modify numbers parameters.";
-                        genTest = false;
-                        break;
-                    }
-                }
-                while (!this.CGTarget && this.Numbers[i] === this.target);
-                this.objNumbers[i] = new ObjNumber(this.Numbers[i], this.Numbers[i].toString());
-            }
-            trials_counter2++;
-            if (trials_counter2 > 10) {
-                generateNumbersError = "Can not generate numbers different from the target. Please modify numbers parameters.";
-                break;
-            }
+    this.target = this.generateRandomNumbers(this.min_target, this.max_target, this.step_target);
+    genTest = true;
+    for (var i = 0; i < this.size; i++) {
+        do {    //loop on numbers generation
+            this.Numbers[i] = this.generateRandomNumbers(this.min_number, this.max_number, 1);
         }
-        while (!this.CGTarget && !genTest)
+        while (!this.CGTarget && this.Numbers[i] === this.target);
+        this.objNumbers[i] = new ObjNumber(this.Numbers[i], this.Numbers[i].toString());
+    }
 
-        this.foundSol = false;
-        this.listOfSolutions = [];
-        this.bestSolution = [];
-        this.stringSolutions = [];
-        this.hintList = [];
-        var allSolutions = this.findSolution(this.objNumbers, this.target, this.mustUseAll);
+    this.foundSol = false;
+    this.listOfSolutions = [];
+    this.bestSolution = [];
+    this.stringSolutions = [];
+    this.hintList = [];
+    var allSolutions = this.findSolution(this.objNumbers, this.target, this.mustUseAll);
 
-        if (allSolutions.lowerSol === this.target) {
-            this.foundSol = true;
-        }
-
-        if (trials_counter > 100) {
-            //raise error
-            generateNumbersError = "Can not generate a game with solution. Please modify parameters.";
-            break;
+    if (allSolutions.lowerSol === this.target) {
+        this.foundSol = true;
+    }
+    else {
+        if(this.hasExactSolution) {     //target is forced to be equal to the closest solution.
+            if(this.target-allSolutions.lowerSol < allSolutions.upperSol-this.target) {
+                this.target=allSolutions.lowerSol;
+            }
+            else {
+                this.target=allSolutions.upperSol; 
+            }
+            this.foundSol=true;
         }
     }
-    while (!this.foundSol && this.hasExactSolution)
 
     if (generateNumbersError.length === 0) {
         if (allSolutions.lowerSol === this.target) {

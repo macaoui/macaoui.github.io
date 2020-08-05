@@ -1,4 +1,4 @@
-﻿var num_container = $('#numbers_container');
+var num_container = $('#numbers_container');
 var ope_container = $('#operands_container');
 var formLevelFields = ['lname', 'size', 'min_number', 'max_number', 'tgt_min', 'tgt_max', 'tgt_step', 'timer'];
 var booleanLevelFields = ['hasExactSol', 'mustUseAll'];
@@ -264,6 +264,7 @@ $(document).ready(function () {
         hintList = gameHandler.hintList;
         bestSolution = gameHandler.bestSolution;
         mustUseAll = gameHandler.mustUseAll;
+        stringSolutions=gameHandler.stringSolutions;
 
         numSet = initSet(numbers);
         $('#display_target').text("Make " + target);
@@ -435,7 +436,7 @@ $(document).ready(function () {
     var scoreFields = ['score', 'time', 'player_name'];
     var hs_size = 10;
     var addLevel = new GameLevel(0,"Easy easy Add", 4, 1, 9, "+", 1, 9, 1, true, false, false,2);
-    var easyLevel = new GameLevel(1,"Plus and Minus", 4, 3, 9, "+-", 1, 5, 1, true, false, false,3);
+    var easyLevel = new GameLevel(1,"Plus and Minus", 4, 3, 9, "+-", 1, 20, 1, true, false, false,3);
  //   var easyadvancedLevel = new GameLevel("Add and Subtract", 6, 0, 9, "+-", 1, 9, 1, true, true, true, 5);
     var plusmultLevel = new GameLevel(2,"Multiply Master", 3, 2, 9, "+-x", 10, 81, 1, true, true, true, 4, "x");
     var minusLevel = new GameLevel(3,"The Mysterious Mister Minus", 6, 1, 9, "-", 0, 9, 1, true, true, true, 4);
@@ -444,7 +445,7 @@ $(document).ready(function () {
     var mediumLevel = new GameLevel(5,"The Standard", 4, 1, 9, "+-x", 4, 48, 4, true, true, true, 10);
     var divideLevel = new GameLevel(6,"The Divide Dandy", 5, 1, 9, "+x/", 1, 9, 1, true, true, true, 10);
  //   var mediumadvancedLevel = new GameLevel("Medium Challenging", 5, 1, 9, "+-x", 3, 99, 3, false, true, true,10);
-    var twentyfourLevel = new GameLevel(7,"Make 24", 4, 1, 10, "+-x/", 24, 24, 1, true, true, true,10);
+    var twentyfourLevel = new GameLevel(7,"Make 24", 4, 1, 10, "+-x/", 24, 24, 1, false, true, true,10);
     var challengingLevel = new GameLevel(8,"The Challenge", 4, 1, 10, "+-x/", 1, 99, 1, false, true, true,10);
     var ultimateLevel = new GameLevel(9,"The Ultimate", 5, 1, 10, "+-x/", 1, 199, 1, false, true, true,12,"+-x/",true);
     var allLevels = [];
@@ -648,9 +649,9 @@ $(document).ready(function () {
         var size = parseInt($('#level_size').val());
         var min_number = parseInt($('#level_min_number').val());
         var max_number = parseInt($('#level_max_number').val());
-        if (min_number > max_number) {
+        if (min_number >= max_number) {
             hasError = true;
-            $('#custom_number_error').text('Minimum shall be inferior to Maximum');
+            $('#custom_number_error').text('Maximum shall be strictly superior to Minimum');
             $('#level_min_number').closest('.form-group').addClass('has-error');
             e.preventDefault(); //stop form submission
         } else {
