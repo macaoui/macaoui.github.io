@@ -438,9 +438,9 @@ $(document).ready(function () {
     var addLevel = new GameLevel(0,"Easy easy Add", 3, 1, 9, "+", 1, 10, 1, true, false, false,2);
     var easyLevel = new GameLevel(1,"Plus and Minus", 3, 1, 9, "+-", 1, 10, 1, true, false, false,3);
  //   var easyadvancedLevel = new GameLevel("Add and Subtract", 6, 0, 9, "+-", 1, 9, 1, true, true, true, 5);
-    var plusmultLevel = new GameLevel(2,"Multiply Master", 3, 2, 9, "+-x", 10, 81, 1, true, true, true, 4, "x");
+    var multLevel = new GameLevel(2,"Multiply Trainer", 3, 2, 9, "x", 10, 81, 1, true, false, true, 4);
     var minusLevel = new GameLevel(3,"The Mysterious Mister Minus", 6, 1, 9, "-", 0, 9, 1, true, true, true, 4);
-    var minusmultLevel = new GameLevel(4,"Mister Minus and Multiply", 4, 1, 9, "-x", 2, 36, 2, true, true, true, 5,"x",true);
+    var plusmultLevel = new GameLevel(4,"Multiply Master", 3, 2, 9, "+-x", 10, 81, 1, true, true, true, 4, "x");
 
     var mediumLevel = new GameLevel(5,"The Standard", 4, 1, 9, "+-x", 4, 48, 4, true, true, true, 10);
     var divideLevel = new GameLevel(6,"The Divide Dandy", 5, 1, 9, "+x/", 1, 9, 1, true, true, true, 10);
@@ -449,7 +449,7 @@ $(document).ready(function () {
     var challengingLevel = new GameLevel(8,"The Challenge", 4, 1, 10, "+-x/", 1, 99, 1, false, true, true,10);
     var ultimateLevel = new GameLevel(9,"The Ultimate", 5, 1, 10, "+-x/", 1, 199, 1, false, true, true,12,"+-x/",true);
     var allLevels = [];
-    allLevels.push(addLevel, easyLevel, plusmultLevel, minusLevel, minusmultLevel,
+    allLevels.push(addLevel, easyLevel, multLevel, minusLevel, plusmultLevel,
         mediumLevel, divideLevel, twentyfourLevel, challengingLevel, ultimateLevel);
     allLevels.sort(function (a, b) {
         return (a.index - b.index);   //sort in ascending order;
