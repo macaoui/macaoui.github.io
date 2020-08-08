@@ -376,7 +376,7 @@ $(document).ready(function () {
     //Show input_name_modal if the player enter in the high scores
     function show_input_name_modal(ranking) {
         $('#input_name_text').empty();
-        $('#input_name_text').append('<b>Congratulations!!! <br> You have reached rank no ' + ranking+ ' !</b>');
+        $('#input_name_text').append('<b>Congratulations!!! <br> You have reached rank no ' + ranking+ ' !  &#x1F60E;</b>');
         $('#name_input').attr('ranking', ranking);
         document.getElementById("name_input").value='';
         $('#inputNameModal').modal('show');
@@ -385,7 +385,7 @@ $(document).ready(function () {
     //Show high-score at end of a challenge or when requested 
     function show_hs_modal() {
         $('#hs_text').append('<b>High Score </b> <br> ' + sLevel.lname);
-        var header = "<table class='table table-striped'>" +
+        var header = "<table class='table'>" +
             "<tr><th>#</th><th>Name</th><th>Score</th><th>Time</th></tr>";
         var footer = "</table>";
         var table_body = "";
@@ -440,7 +440,7 @@ $(document).ready(function () {
  //   var easyadvancedLevel = new GameLevel("Add and Subtract", 6, 0, 9, "+-", 1, 9, 1, true, true, true, 5);
     var multLevel = new GameLevel(2,"Multiply Trainer", 3, 2, 9, "x", 10, 81, 1, true, false, true, 4);
     var minusLevel = new GameLevel(3,"The Mysterious Mister Minus", 6, 1, 9, "-", 0, 9, 1, true, true, true, 4);
-    var plusmultLevel = new GameLevel(4,"Multiply Master", 3, 2, 9, "+-x", 10, 81, 1, true, true, true, 4, "x");
+    var plusmultLevel = new GameLevel(4,"Multiply Master", 3, 2, 9, "+-x", 10, 81, 1, true, true, true, 4, "x",true);
 
     var mediumLevel = new GameLevel(5,"The Standard", 4, 1, 9, "+-x", 4, 48, 4, true, true, true, 10);
     var divideLevel = new GameLevel(6,"The Divide Dandy", 5, 1, 9, "+x/", 1, 9, 1, true, true, true, 10);

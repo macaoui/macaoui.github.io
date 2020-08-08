@@ -19,17 +19,17 @@
 ******************************************************/
 
 .btn-default {
-	border: 2px solid #C4C4C4;
+	border: 2px solid darkgray;
+    background-color: dimgray;
 	color: #737373;
 	padding: 12px 22px;
 }
 .btn-default:hover, .btn-default:focus, .btn-default:active, .btn-default.active, .open > .dropdown-toggle.btn-default {
-	background: #FFFFFF;
 	border-color: #949494;
 	color: #737373;
 }
 .btn-default:active, .btn-default.active {
-	border-color: #737373;
+    border-color: #737373;
 	box-shadow: none;
 }
 
@@ -40,6 +40,7 @@
 .btn-primary {
 	background: #0099cc;
 	color: #ffffff;
+    border: blue;
 }
 .btn-primary:hover, .btn-primary:focus, .btn-primary:active, .btn-primary.active, .open > .dropdown-toggle.btn-primary {
 	background: #33a6cc;
