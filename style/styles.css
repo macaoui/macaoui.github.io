@@ -62,7 +62,7 @@
 #display_hint {
 margin: auto;
 margin-top: 10px;
-color: indianred;
+color: tomato;
 }
 
 .modal_play_text {
@@ -71,7 +71,7 @@ margin-top: 8px;
 
 #retry_text {
     font-size: 18px;
-    color:yellowgreen;
+    color:gold;
 }
 
 #win_text {
@@ -136,13 +136,11 @@ h3 {
 .number {
     margin: 0px 3px 0px 3px;
     font-weight: 800;
-    border: darkblue;
 }
 
 .operand {
     margin: 0px 6px 0px 6px;
     font-weight: 900;
-    border: blue;
 }
 
 #restart {

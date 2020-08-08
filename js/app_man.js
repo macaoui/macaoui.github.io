@@ -438,7 +438,7 @@ $(document).ready(function () {
     var addLevel = new GameLevel(0,"Easy easy Add", 3, 1, 9, "+", 1, 10, 1, true, false, false,2);
     var easyLevel = new GameLevel(1,"Plus and Minus", 3, 1, 9, "+-", 1, 10, 1, true, false, false,3);
  //   var easyadvancedLevel = new GameLevel("Add and Subtract", 6, 0, 9, "+-", 1, 9, 1, true, true, true, 5);
-    var multLevel = new GameLevel(2,"Multiply Trainer", 3, 2, 9, "x", 10, 81, 1, true, false, true, 4);
+    var multLevel = new GameLevel(2,"Multiply Trainer", 4, 2, 9, "x", 10, 81, 1, true, false, true, 4);
     var minusLevel = new GameLevel(3,"The Mysterious Mister Minus", 6, 1, 9, "-", 0, 9, 1, true, true, true, 4);
     var plusmultLevel = new GameLevel(4,"Multiply Master", 3, 2, 9, "+-x", 10, 81, 1, true, true, true, 4, "x",true);
 
