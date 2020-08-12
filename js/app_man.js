@@ -467,6 +467,22 @@ $(document).ready(function () {
 
     var level = parseInt(getStorage('level','','',2));
     var sLevel = allLevels[level];
+    
+    // Getting info from url
+    var parts = window.location.search.substr(1).split("&");
+    var $_GET = {};
+    for (var i = 0; i < parts.length; i++) {
+    var temp = parts[i].split("=");
+    $_GET[decodeURIComponent(temp[0])] = decodeURIComponent(temp[1]);
+    }
+    $('#display_get').text("  test  "); 
+    if(typeof $_GET['a'] !== 'undefined') {
+        var getA=$_GET['a'];
+        $('#display_get').text("Get value a="+getA);        
+    }
+
+
+    
     var gameHandler = new GameHandler(sLevel);
     var level_container1 = $('#select_container');
     var level_container2 = $('#select_container2');
