@@ -25,7 +25,7 @@ function actuateScreen(nSet) {
         return parseInt(a.order) -parseInt(b.order);
     });
     for (i = 0; i < nSet.length; i++) {
-        nSet[i].order = i;
+       nSet[i].order = i;
         if (nSet[i].selected) {
             ctn.append('<button type="button" class="number btn round raised btn-primary n_selected outline" order="' +
                 nSet[i].order + '">' + nSet[i].value + '</button>');
@@ -35,14 +35,18 @@ function actuateScreen(nSet) {
         }
     }
 };
-
+// actuate operands as well as gameId at each new puzzle
 function actuateOperands(nOper) {
     ctnO = $('#operands_container');
     ctnO.empty();
     for (i = 0; i < nOper.length; i++) {
         ctnO.append('<button type="button" class="operand btn btn-info">' + nOper[i] + '</button>');
     }
-}
+    ctn1= $('#share_link');
+    ctn1.empty();
+    ctn1.append('<a href="whatsapp://send?text=Try to solve this! http://www.makeanumber.com?a=' +gameId +'" '+
+                         'data-action="share/whatsapp/share">Share via Whatsapp</a>');
+                        }
 
 function createLevelBar(ctn,allLevels,level, start_index) {
     ctn.empty();
@@ -179,7 +183,7 @@ $(document).ready(function () {
     function Score(lname, rank, score, time, player_name) {
         this.lname = lname;
         this.rank = rank;
-        this.score = (typeof score === 'undefined') ? 0 : score;
+       this.score = (typeof score === 'undefined') ? 0 : score;
         this.time = (typeof time === 'undefined') ? 3599000 : time;
         this.player_name = (typeof player_name === 'undefined') ? 'None' : player_name;
     };
@@ -265,7 +269,25 @@ $(document).ready(function () {
         bestSolution = gameHandler.bestSolution;
         mustUseAll = gameHandler.mustUseAll;
         stringSolutions=gameHandler.stringSolutions;
-
+        // gameId string
+        gameId="t"+target;
+        for (var i = 0; i < numbers.length; i++) {
+            gameId=gameId+"n"+numbers[i];
+        }
+        if (ops.indexOf("+") >= 0) {
+            gameId=gameId+"p";
+        }       
+        if (ops.indexOf("-") >= 0) {
+            gameId=gameId+"m";
+        }   
+        if (ops.indexOf("x") >= 0) {
+            gameId=gameId+"x";
+        }       
+        if (ops.indexOf("/") >= 0) {
+            gameId=gameId+"d";
+        }  
+        
+               
         numSet = initSet(numbers);
         $('#display_target').text("Make " + target);
         actuateScreen(numSet);
@@ -437,14 +459,14 @@ $(document).ready(function () {
     var hs_size = 10;
     var addLevel = new GameLevel(0,"Easy easy Add", 3, 1, 9, "+", 1, 10, 1, true, false, false,2);
     var easyLevel = new GameLevel(1,"Plus and Minus", 3, 1, 9, "+-", 1, 10, 1, true, false, false,3);
- //   var easyadvancedLevel = new GameLevel("Add and Subtract", 6, 0, 9, "+-", 1, 9, 1, true, true, true, 5);
+//   var easyadvancedLevel = new GameLevel("Add and Subtract", 6, 0, 9, "+-", 1, 9, 1, true, true, true, 5);
     var multLevel = new GameLevel(2,"Multiply Trainer", 4, 2, 9, "x", 10, 81, 1, true, false, true, 4);
     var minusLevel = new GameLevel(3,"The Mysterious Mister Minus", 6, 1, 9, "-", 0, 9, 1, true, true, true, 4);
     var plusmultLevel = new GameLevel(4,"Multiply Master", 3, 2, 9, "+-x", 10, 81, 1, true, true, true, 4, "x",true);
 
     var mediumLevel = new GameLevel(5,"The Standard", 4, 1, 9, "+-x", 4, 48, 4, true, true, true, 10);
     var divideLevel = new GameLevel(6,"The Divide Dandy", 5, 1, 9, "+x/", 1, 9, 1, true, true, true, 10);
- //   var mediumadvancedLevel = new GameLevel("Medium Challenging", 5, 1, 9, "+-x", 3, 99, 3, false, true, true,10);
+//   var mediumadvancedLevel = new GameLevel("Medium Challenging", 5, 1, 9, "+-x", 3, 99, 3, false, true, true,10);
     var twentyfourLevel = new GameLevel(7,"Make 24", 4, 1, 10, "+-x/", 24, 24, 1, false, true, true,10);
     var challengingLevel = new GameLevel(8,"The Challenge", 4, 1, 10, "+-x/", 1, 99, 1, false, true, true,10);
     var ultimateLevel = new GameLevel(9,"The Ultimate", 5, 1, 10, "+-x/", 1, 199, 1, false, true, true,12,"+-x/",true);
@@ -466,23 +488,7 @@ $(document).ready(function () {
     }
 
     var level = parseInt(getStorage('level','','',2));
-    var sLevel = allLevels[level];
-    
-    // Getting info from url
-    var parts = window.location.search.substr(1).split("&");
-    var $_GET = {};
-    for (var i = 0; i < parts.length; i++) {
-    var temp = parts[i].split("=");
-    $_GET[decodeURIComponent(temp[0])] = decodeURIComponent(temp[1]);
-    }
-    $('#display_get').text("  test  "); 
-    if(typeof $_GET['a'] !== 'undefined') {
-        var getA=$_GET['a'];
-        $('#display_get').text("Get value a="+getA);        
-    }
-
-
-    
+    var sLevel = allLevels[level];    
     var gameHandler = new GameHandler(sLevel);
     var level_container1 = $('#select_container');
     var level_container2 = $('#select_container2');
@@ -499,6 +505,18 @@ $(document).ready(function () {
     var timeChrono;
 
     initGame(gameHandler);
+    // Getting info from url, otherwise displaying gameId
+    var parts = window.location.search.substr(1).split("&");
+    var $_GET = {};
+    for (var i = 0; i < parts.length; i++) {
+    var temp = parts[i].split("=");
+    $_GET[decodeURIComponent(temp[0])] = decodeURIComponent(temp[1]);
+    }
+
+    if(typeof $_GET['a'] !== 'undefined') {
+        var getA=$_GET['a'];
+        $('#display_get').text("Get value a="+getA);        
+    }
 
     $('[data-toggle="popover"]').popover();
     $('[data-toggle="tooltip"]').tooltip();
@@ -581,7 +599,7 @@ $(document).ready(function () {
             gamesPlayed++;
             $('#tt_skip').tooltip("show");
             setTimeout(function () {
-                $('#tt_skip').tooltip("hide");
+               $('#tt_skip').tooltip("hide");
             }, 1000);
             if (gamesPlayed >= numGamesChallenge) {
                 endChallenge(); // update highscore and back to casual game state
@@ -636,7 +654,7 @@ $(document).ready(function () {
 
     // when loading the custom level form, load the current params as default
     $('#customLevelModal').on('shown.bs.modal', function () {
-        for (var k in formLevelFields) {
+       for (var k in formLevelFields) {
             var f = formLevelFields[k];
             document.getElementById('level_'+f).value= sLevel[f];
         }
