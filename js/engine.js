@@ -155,7 +155,7 @@ GameHandler.prototype.generateNumbers = function () {
 
     if(getOK) {
         this.target=getTarget;
-        this.Numbers=getNumbers;
+        this.Numbers=getNumbers.reverse();
         this.size= getNumbers.length;
         this.objNumbers = new Array(this.size);
         for (var i = 0; i < this.size; i++) {
