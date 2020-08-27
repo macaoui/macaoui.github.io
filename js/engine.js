@@ -67,7 +67,7 @@ GameLevel.prototype.setLevel = function () {
     }
 }
 
-function GameHandler(gameLevel) {
+function GameHandler(gameLevel, getValue) {
     this.min_target = gameLevel.tgt_min;
     this.max_target = gameLevel.tgt_max;
     this.step_target = gameLevel.tgt_step;
@@ -87,6 +87,7 @@ function GameHandler(gameLevel) {
     this.listOfSolutions = new Array();
     this.hintList = new Array();
     this.selectSol = "";
+    this.getValue= getValue;
     this.generateError= this.generateNumbers();
 }
 
@@ -112,14 +113,67 @@ GameHandler.prototype.generateRandomNumbers = function (min, max, step) {
 //generate a new Numbers set and list all solutions.
 GameHandler.prototype.generateNumbers = function () {
     var generateNumbersError = "";
-    this.target = this.generateRandomNumbers(this.min_target, this.max_target, this.step_target);
-    genTest = true;
-    for (var i = 0; i < this.size; i++) {
-        do {    //loop on numbers generation
-            this.Numbers[i] = this.generateRandomNumbers(this.min_number, this.max_number, 1);
+    // test and parse getValue. If getVAlue is valid then use target, numbers, ops, mustUseAll, hasASolution from it.
+    var getOK=true;
+    var gTest=this.getValue;
+    if(typeof gTest['t'] !== 'undefined') {
+        if (Number.isInteger(parseInt(gTest['t']))) {
+            var getTarget=parseInt(gTest['t']);
+        } else { getOK=false; }
+    } else { getOK=false; }    
+
+    if(typeof gTest['n'] !== 'undefined') {
+        if (Number.isInteger(parseInt(gTest['n']))) {
+            var getNumbers=[];
+            var nn=parseInt(gTest['n']);
+            while(nn % 100 >0 && getNumbers.length<6) {
+                getNumbers.push(nn %100);
+                nn= (nn- (nn%100))/100;
+            }
+            if (getNumbers.length<1) {getOK=false};
+        } else { getOK=false; }
+    } else { getOK=false; } 
+
+    if(typeof gTest['o'] !== 'undefined') {
+        if (typeof gTest['o'] === 'string' || gTest['o'] instanceof String) {
+            var getOps=[];
+            if (gTest['o'].indexOf("p") >= 0) {
+                getOps.push("+");
+            }       
+            if (gTest['o'].indexOf("m") >= 0) {
+                getOps.push("-");
+            }    
+            if (gTest['o'].indexOf("x") >= 0) {
+                getOps.push("x");
+            }        
+            if (gTest['o'].indexOf("d") >= 0) {
+                getOps.push("/");
+            }  
+            if (getOps.length===0) {getOK=false};
+        } else { getOK=false; }
+    } else { getOK=false; }
+
+    if(getOK) {
+        this.target=getTarget;
+        this.Numbers=getNumbers;
+        this.size= getNumbers.length;
+        this.objNumbers = new Array(this.size);
+        for (var i = 0; i < this.size; i++) {
+            this.objNumbers[i] = new ObjNumber(this.Numbers[i], this.Numbers[i].toString());
         }
-        while (!this.CGTarget && this.Numbers[i] === this.target);
-        this.objNumbers[i] = new ObjNumber(this.Numbers[i], this.Numbers[i].toString());
+        this.operations= getOps;
+        this.mustUseAll= !(parseInt(gTest['a'])===0);
+        this.hasExactSolution= !(parseInt(gTest['s'])===0);
+    }
+    else {
+        this.target = this.generateRandomNumbers(this.min_target, this.max_target, this.step_target);
+        for (var i = 0; i < this.size; i++) {
+            do {    //loop on numbers generation
+                this.Numbers[i] = this.generateRandomNumbers(this.min_number, this.max_number, 1);
+            }
+            while (!this.CGTarget && this.Numbers[i] === this.target);
+            this.objNumbers[i] = new ObjNumber(this.Numbers[i], this.Numbers[i].toString());
+        }
     }
 
     this.foundSol = false;

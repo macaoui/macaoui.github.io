@@ -35,7 +35,7 @@ function actuateScreen(nSet) {
         }
     }
 };
-// actuate operands as well as gameId at each new puzzle
+// actuate operands as well as url at each new puzzle
 function actuateOperands(nOper) {
     ctnO = $('#operands_container');
     ctnO.empty();
@@ -44,7 +44,7 @@ function actuateOperands(nOper) {
     }
     ctn1= $('#share_link');
     ctn1.empty();
-    ctn1.append('<a href="whatsapp://send?text=Try to solve this! http://www.makeanumber.com?a=' +gameId +'" '+
+    ctn1.append('<a href="whatsapp://send?text=Try to solve this! http://www.makeanumber.com?' +gameId +'" '+
                          'data-action="share/whatsapp/share">Share via Whatsapp</a>');
                         }
 
@@ -269,11 +269,14 @@ $(document).ready(function () {
         bestSolution = gameHandler.bestSolution;
         mustUseAll = gameHandler.mustUseAll;
         stringSolutions=gameHandler.stringSolutions;
-        // gameId string
-        gameId="t"+target;
+
+        // gameId string. It contains level,target, numbers, ops, mustUseall, hasSolution
+        numId=0;
+        gameId= "l="+level+"&t="+target;
         for (var i = 0; i < numbers.length; i++) {
-            gameId=gameId+"n"+numbers[i];
+            numId=100*numId+numbers[i];
         }
+        gameId=gameId+"&n="+numId+"&o=";
         if (ops.indexOf("+") >= 0) {
             gameId=gameId+"p";
         }       
@@ -285,9 +288,12 @@ $(document).ready(function () {
         }       
         if (ops.indexOf("/") >= 0) {
             gameId=gameId+"d";
-        }  
-        
-               
+        }
+        solId= (target=== bestSolution[0])? 1:0;
+        allId= mustUseAll? 1:0;
+        gameId=gameId+"&a="+allId+"&s="+solId;
+        // end gameId
+
         numSet = initSet(numbers);
         $('#display_target').text("Make " + target);
         actuateScreen(numSet);
@@ -326,7 +332,7 @@ $(document).ready(function () {
             endChallenge(); // update highscore and back to casual game state
         }
         else {
-            gameHandler = new GameHandler(sLevel);
+            gameHandler = new GameHandler(sLevel,{});
             initGame(gameHandler);
         }
     }
@@ -447,7 +453,7 @@ $(document).ready(function () {
         allLevels.splice(level, 1, newLevel);
         createLevelBar(level_container1, allLevels, level, 0);
         createLevelBar(level_container2, allLevels, level, 5);
-        var newGame = new GameHandler(newLevel);
+        var newGame = new GameHandler(newLevel,{});
         initGame(newGame);
     }
 
@@ -487,9 +493,35 @@ $(document).ready(function () {
         }
     }
 
-    var level = parseInt(getStorage('level','','',2));
-    var sLevel = allLevels[level];    
-    var gameHandler = new GameHandler(sLevel);
+// Getting info from url, otherwise displaying gameId
+var parts = window.location.search.substr(1).split("&");
+var $_GET = {};
+delete getA;
+for (var i = 0; i < parts.length; i++) {
+    var temp = parts[i].split("=");
+    $_GET[decodeURIComponent(temp[0])] = decodeURIComponent(temp[1]);
+}
+
+// select level from GET variable otherwise by default
+var level = parseInt(getStorage('level','','',7));
+var getTest=false;
+if(typeof $_GET['l'] !== 'undefined') {
+    var testL=parseInt($_GET['l']);
+    if (Number.isInteger(testL) && testL<10 && testL>=0) {
+        level=testL;
+        getTest=true;
+     }
+}
+var sLevel = allLevels[level];
+
+if(getTest) {
+    var gameHandler = new GameHandler(sLevel,$_GET);
+    }
+    else {
+    var gameHandler = new GameHandler(sLevel,{});
+    }
+
+
     var level_container1 = $('#select_container');
     var level_container2 = $('#select_container2');
     createLevelBar(level_container1, allLevels, level, 0);
@@ -505,18 +537,6 @@ $(document).ready(function () {
     var timeChrono;
 
     initGame(gameHandler);
-    // Getting info from url, otherwise displaying gameId
-    var parts = window.location.search.substr(1).split("&");
-    var $_GET = {};
-    for (var i = 0; i < parts.length; i++) {
-    var temp = parts[i].split("=");
-    $_GET[decodeURIComponent(temp[0])] = decodeURIComponent(temp[1]);
-    }
-
-    if(typeof $_GET['a'] !== 'undefined') {
-        var getA=$_GET['a'];
-        $('#display_get').text("Get value a="+getA);        
-    }
 
     $('[data-toggle="popover"]').popover();
     $('[data-toggle="tooltip"]').tooltip();
@@ -578,7 +598,7 @@ $(document).ready(function () {
             $('.level_btn').removeClass('selected');
             $(this).addClass('selected');
             updateLevel();
-            gameHandler = new GameHandler(sLevel);
+            gameHandler = new GameHandler(sLevel,{});
             initGame(gameHandler);
         }
     });
@@ -594,7 +614,7 @@ $(document).ready(function () {
     $(document).on('click', '.btn-new', function () {
         $('#playModal').modal('hide');
         updateLevel();
-        gameHandler = new GameHandler(sLevel);
+        gameHandler = new GameHandler(sLevel,{});
         if (challengeStatus) {
             gamesPlayed++;
             $('#tt_skip').tooltip("show");
@@ -632,7 +652,7 @@ $(document).ready(function () {
     $(document).on('click', '#start_challenge', function () {
         $('#playModal').modal('hide');
         updateLevel();
-        gameHandler = new GameHandler(sLevel);
+        gameHandler = new GameHandler(sLevel,{});
         startChallenge();
         initGame(gameHandler);
     })
@@ -737,7 +757,7 @@ $(document).ready(function () {
         var timer = parseInt($('#level_timer').val());
         if (!hasError) {
             var newLevel = new GameLevel(level,lname, size, min_number, max_number, ops, tgt_min, tgt_max, tgt_step, hasExactSol, mustUseAll, canGenerateTarget, timer, ops, true);
-            var gameTest = new GameHandler(newLevel);
+            var gameTest = new GameHandler(newLevel,{});
             if (gameTest.generateError.length > 0) {
                 $('#custom_generation_error').text(gameTest.generateError);
                 $('#level_min_number').closest('.form-group').addClass('has-error');
