@@ -44,7 +44,7 @@ function actuateOperands(nOper) {
     }
     ctn1= $('#share_link');
     ctn1.empty();
-    ctn1.append('<a href="whatsapp://send?text=Try to solve this! http://www.makeanumber.com?' +gameId +'" '+
+    ctn1.append('<a href="whatsapp://send?text=Can you get ' + target + ' with ' + numbersString + '? http://www.makeanumber.com?' +gameId +'" '+
                          'data-action="share/whatsapp/share">Share via Whatsapp</a>');
                         }
 
@@ -269,6 +269,7 @@ $(document).ready(function () {
         bestSolution = gameHandler.bestSolution;
         mustUseAll = gameHandler.mustUseAll;
         stringSolutions=gameHandler.stringSolutions;
+        numbersString=numbers.join(', ');
 
         // gameId string. It contains level,target, numbers, ops, mustUseall, hasSolution
         numId=0;
