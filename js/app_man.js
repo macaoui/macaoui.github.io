@@ -44,7 +44,7 @@ function actuateOperands(nOper) {
     }
     ctn1= $('#share_link');
     ctn1.empty();
-    ctn1.append('<a href="whatsapp://send?text=Can you get ' + target + ' with ' + numbersString + '? http://www.makeanumber.com?' +gameId +'" '+
+    ctn1.append('<a href="whatsapp://send?text=Can you get ' + target + ' with ' + numbersString + '? http://www.makeanumber.com?' +encodeURIComponent(gameId) +'" '+
                          'data-action="share/whatsapp/share">Share via Whatsapp</a>');
                         }
 
