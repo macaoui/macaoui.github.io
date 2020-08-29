@@ -3,16 +3,17 @@ var ope_container = $('#operands_container');
 var formLevelFields = ['lname', 'size', 'min_number', 'max_number', 'tgt_min', 'tgt_max', 'tgt_step', 'timer'];
 var booleanLevelFields = ['hasExactSol', 'mustUseAll'];
 // create an number object with order attribute
-function NumberObject(value, order, selected) {
+function NumberObject(value, order, expression, selected) {
     this.value = parseInt(value);
     this.order = order;
+    this.expression= expression;
     this.selected = selected;
 };
 
 function initSet(numbers) {
     numSet = []
     for (i = 0; i < numbers.length; i++) {
-        newN = new NumberObject(numbers[i], i, false)
+        newN = new NumberObject(numbers[i], i, numbers[i].toString(), false)
         numSet.push(newN)
     }
     return numSet;
@@ -28,10 +29,10 @@ function actuateScreen(nSet) {
        nSet[i].order = i;
         if (nSet[i].selected) {
             ctn.append('<button type="button" class="number btn round raised btn-primary n_selected outline" order="' +
-                nSet[i].order + '">' + nSet[i].value + '</button>');
+                nSet[i].order + '" expression="' + nSet[i].expression + '">' + nSet[i].value + '</button>');
         } else {
             ctn.append('<button type="button" class="number btn round raised btn-primary" order="' +
-                nSet[i].order + '">' + nSet[i].value + '</button>');
+                nSet[i].order + '" expression="' + nSet[i].expression + '">' + nSet[i].value + '</button>');
         }
     }
 };
@@ -338,31 +339,28 @@ $(document).ready(function () {
         }
     }
 
-    function testEndGame(nSet, currentValue, mustUseAll, bestSolution) {
-        if (nSet.length === 1) {
-            if (nSet[0].value === bestSolution[0] || nSet[0].value === bestSolution[1]) {
+    function testEndGame(nSet, currentNumber, mustUseAll, bestSolution) {
+        if (nSet.length === 1 || !mustUseAll) {
+            if (currentNumber.value === bestSolution[0] || currentNumber.value === bestSolution[1]) {
                 if (challengeStatus) {
                     endGameChallenge();
                 }
                 else {
+                    ctn2= $('#share_solution_link');
+                    ctn2.empty();
+                    ctn2.append('<a href="whatsapp://send?text=Get ' + target + ' with ' + numbersString + '? My solution: '+
+                        currentNumber.expression + ' >_< http://www.makeanumber.com?' +encodeURIComponent(gameId) +'" '+
+                        'data-action="share/whatsapp/share">Share solution</a>');
                     $('#winModal').modal('show');
                 }
             }
             else {
+                if (nSet.length ===1) {
                 $('#loseModal').modal('show');
-            }
-        }
-        else {
-            if (!mustUseAll && (currentValue === bestSolution[0] || currentValue === bestSolution[1])) {
-                if (challengeStatus) {
-                    endGameChallenge();
-                }
-                else {
-                    $('#winModal').modal('show');
                 }
             }
         }
-    };
+    }
 
     //Challenge
     function startChallenge() {
@@ -468,15 +466,15 @@ $(document).ready(function () {
     var easyLevel = new GameLevel(1,"Plus and Minus", 3, 1, 9, "+-", 1, 10, 1, true, false, false,3);
 //   var easyadvancedLevel = new GameLevel("Add and Subtract", 6, 0, 9, "+-", 1, 9, 1, true, true, true, 5);
     var multLevel = new GameLevel(2,"Multiply Trainer", 4, 2, 9, "x", 10, 81, 1, true, false, true, 4);
-    var minusLevel = new GameLevel(3,"The Mysterious Mister Minus", 6, 1, 9, "-", 0, 9, 1, true, true, true, 4);
+    var minusLevel = new GameLevel(3,"Minus Mystery", 6, 1, 9, "-", 0, 9, 1, true, true, true, 4);
     var plusmultLevel = new GameLevel(4,"Multiply Master", 3, 2, 9, "+-x", 10, 81, 1, true, true, true, 4, "x",true);
 
-    var mediumLevel = new GameLevel(5,"The Standard", 4, 1, 9, "+-x", 4, 48, 4, true, true, true, 10);
-    var divideLevel = new GameLevel(6,"The Divide Dandy", 5, 1, 9, "+x/", 1, 9, 1, true, true, true, 10);
+    var mediumLevel = new GameLevel(5,"Standard", 4, 1, 9, "+-x", 4, 48, 4, true, true, true, 10);
+    var divideLevel = new GameLevel(6,"Divide", 5, 1, 9, "+x/", 1, 9, 1, true, true, true, 10);
 //   var mediumadvancedLevel = new GameLevel("Medium Challenging", 5, 1, 9, "+-x", 3, 99, 3, false, true, true,10);
     var twentyfourLevel = new GameLevel(7,"Make 24", 4, 1, 10, "+-x/", 24, 24, 1, false, true, true,10);
-    var challengingLevel = new GameLevel(8,"The Challenge", 4, 1, 10, "+-x/", 1, 99, 1, false, true, true,10);
-    var ultimateLevel = new GameLevel(9,"The Ultimate", 5, 1, 10, "+-x/", 1, 199, 1, false, true, true,12,"+-x/",true);
+    var challengingLevel = new GameLevel(8,"Challenge", 4, 1, 10, "+-x/", 1, 99, 1, false, true, true,10);
+    var ultimateLevel = new GameLevel(9,"Ultimate", 5, 1, 10, "+-x/", 1, 199, 1, false, true, true,12,"+-x/",true);
     var allLevels = [];
     allLevels.push(addLevel, easyLevel, multLevel, minusLevel, plusmultLevel,
         mediumLevel, divideLevel, twentyfourLevel, challengingLevel, ultimateLevel);
@@ -559,12 +557,15 @@ if(getTest) {
                 var numB= $(this)
                 var a = parseInt(numA.text());
                 var b = parseInt(numB.text());
-                var order_a = parseInt(numA.attr('order'))
-                var order_b = parseInt(numB.attr('order'))
+                var order_a = parseInt(numA.attr('order'));
+                var order_b = parseInt(numB.attr('order'));
+                var exp_a = numA.attr('expression');
+                var exp_b = numB.attr('expression');
                 $(this).addClass('n_selected outline');
                 var oper = $('.operand.op_selected').text();
                 var c = operate(a, b, oper);
                 if (isValid(c)) {
+                    newCalcul = (numSet.length === 2) ? exp_a + oper + exp_b : '(' + exp_a + oper + exp_b + ')';
                     for (var i = numSet.length-1; i >=0; i--) {
                         if (numSet[i].order=== order_a || numSet[i].order===order_b) {
                             numSet.splice(i,1);
@@ -573,10 +574,10 @@ if(getTest) {
                             numSet[i].selected = false;
                         }
                     }
-                    var newNum = new NumberObject(c,  order_b, true);
+                    var newNum = new NumberObject(c,  order_b, newCalcul, true);
                     numSet.push(newNum);
                     actuateScreen(numSet);      // update screen and manage game end.
-                    testEndGame(numSet, c, mustUseAll,bestSolution);
+                    testEndGame(numSet, newNum, mustUseAll,bestSolution);
                     $('.operand.op_selected').removeClass('op_selected outline');                     //unselect operand
 
                 }
