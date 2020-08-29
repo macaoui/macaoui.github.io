@@ -349,7 +349,7 @@ $(document).ready(function () {
                     ctn2= $('#share_solution_link');
                     ctn2.empty();
                     ctn2.append('<a href="whatsapp://send?text=Get ' + target + ' with ' + numbersString + '? My solution: '+
-                        currentNumber.expression + ' U+1F60A http://www.makeanumber.com?' +encodeURIComponent(gameId) +'" '+
+                        currentNumber.expression + ' \u1F60A http://www.makeanumber.com?' +encodeURIComponent(gameId) +'" '+
                         'data-action="share/whatsapp/share">Share solution</a>');
                     $('#winModal').modal('show');
                 }
