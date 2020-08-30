@@ -348,7 +348,7 @@ $(document).ready(function () {
                 else {
                     ctn2= $('#share_solution_link');
                     ctn2.empty();
-                    ctn2.append(`<a href="whatsapp://send?text=Get ${target} with ${numbersString}? My solution: ${currentNumber.expression}. http://www.makeanumber.com?${encodeURIComponent(gameId)}" data-action="share/whatsapp/share">Share solution</a>`);
+                    ctn2.append(`<a href="whatsapp://send?text=Get ${target} with ${numbersString}? My solution: ${currentNumber.expression} \u1F60A http://www.makeanumber.com?${encodeURIComponent(gameId)}" data-action="share/whatsapp/share">Share solution</a>`);
                     $('#winModal').modal('show');
                 }
             }
