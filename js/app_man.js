@@ -287,29 +287,40 @@ $(document).ready(function () {
         stringSolutions=gameHandler.stringSolutions;
         numbersString=numbers.join(', ');
 
-        // gameId string. It contains level,target, numbers, ops, mustUseall, hasSolution
+        // gameId string and object. They contain level,target, numbers, ops, mustUseall, hasSolution
         numId=0;
-        gameId= "l="+level+"&t="+target;
+        opId="";
+        gameIdString= "l="+level+"&t="+target;
         for (var i = 0; i < numbers.length; i++) {
             numId=100*numId+numbers[i];
         }
-        gameId=gameId+"&n="+numId+"&o=";
+        gameIdString=gameIdString+"&n="+numId;
         if (ops.indexOf("+") >= 0) {
-            gameId=gameId+"p";
+            opId=opId+"p";
         }       
         if (ops.indexOf("-") >= 0) {
-            gameId=gameId+"m";
+            opId=opId+"m";
         }   
         if (ops.indexOf("x") >= 0) {
-            gameId=gameId+"x";
+            opId=opId+"x";
         }       
         if (ops.indexOf("/") >= 0) {
-            gameId=gameId+"d";
+            opId=opId+"d";
         }
+        gameIdString=gameIdString+"&o="+opId;
         solId= (target=== bestSolution[0])? 1:0;
         allId= mustUseAll? 1:0;
-        gameId=gameId+"&a="+allId+"&s="+solId;
-        // end gameId
+        gameIdString=gameIdString+"&a="+allId+"&s="+solId;
+
+        gameId= new GameId(level,target,numId,opId,allId,solId);
+        gameLSHisto= localStorage.getItem('gameHisto');
+        gameHistoArray= JSON.parse(gameLSHisto);
+        if (gameHistoArray===null) {
+            gameHistoArray=[];
+        }
+        gameHistoArray.push(gameId);
+        localStorage.setItem('gameHisto', JSON.stringify(gameHistoArray));
+// TO DO: Generate historic modal or dropdown list: create the list, with each line being clickable. When clicked, jquery action to start the corresponding game
 
         numSet = initSet(numbers);
         $('#display_target').text("Make " + target);
@@ -363,7 +374,7 @@ $(document).ready(function () {
                 else {
                     ctn2= $('#share_solution_link');
                     ctn2.empty();
-                    ctn2.append(`<a href="whatsapp://send?text=Get ${target} with ${numbersString}? My solution: ${currentNumber.expression}. http://www.makeanumber.com?${encodeURIComponent(gameId)}" data-action="share/whatsapp/share">Share solution</a>`);
+                    ctn2.append(`<a href="whatsapp://send?text=Get ${target} with ${numbersString}? My solution: ${currentNumber.expression}. http://www.makeanumber.com?${encodeURIComponent(gameIdString)}" data-action="share/whatsapp/share">Share solution</a>`);
                     $('#winModal').modal('show');
                 }
             }
@@ -661,7 +672,8 @@ if(getTest) {
     })
 
     $(document).on('click', '#new_game_btn', function () {
-        $('#playModal').modal('show');
+        gameHandler = new GameHandler(sLevel,{});
+        initGame(gameHandler);
     })
 
     $(document).on('click', '#start_challenge', function () {

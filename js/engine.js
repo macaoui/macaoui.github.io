@@ -1,6 +1,6 @@
 var levelFields = ['lname', 'size', 'min_number', 'max_number', 'ops', 'tgt_min', 'tgt_max', 'tgt_step', 'hasExactSol', 'mustUseAll',
                     'CGTarget', 'timer', 'last_ops', 'isCustom'];
-var numlevelFields = [false, true, true,true, false, true,true,true, false,false,false,true,false,false];
+var numlevelFields = [false, true, true,true, false, true,true,true, false,false,false,true,false,false]; //indicates if field is numeric
 
 function string2readable(str, sep, sep2) {
     if (str.length < 2) {
