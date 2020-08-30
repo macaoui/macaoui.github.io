@@ -33,6 +33,13 @@
   margin-bottom: 6px;
  }
 
+ .display_text_dark { 
+    font-size: 14px;
+    text-align: center;
+    margin-bottom: 6px;
+    color: darkblue;
+   }
+
 .wrap {
     text-align: center;
     width:100%;
