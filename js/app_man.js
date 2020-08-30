@@ -3,12 +3,27 @@ var ope_container = $('#operands_container');
 var formLevelFields = ['lname', 'size', 'min_number', 'max_number', 'tgt_min', 'tgt_max', 'tgt_step', 'timer'];
 var booleanLevelFields = ['hasExactSol', 'mustUseAll'];
 // create an number object with order attribute
-function NumberObject(value, order, expression, selected) {
-    this.value = parseInt(value);
-    this.order = order;
-    this.expression= expression;
-    this.selected = selected;
-};
+class NumberObject {
+    constructor(value, order, expression, selected) {
+        this.value = parseInt(value);
+        this.order = order;
+        this.expression = expression;
+        this.selected = selected;
+    }
+}
+;
+
+class GameId {
+    constructor(level, target, numbers,ops, mustUseAll, hasSolution) {
+        this.l=parseInt(level);
+        this.t= parseInt(target);
+        this.n= numbers; //can it ba an array or shall it be converted into a single number?
+        this.o=ops;
+        this.a= mustUseAll;
+        this.s= hasSolution;
+        
+    }
+}
 
 function initSet(numbers) {
     numSet = []
@@ -348,7 +363,7 @@ $(document).ready(function () {
                 else {
                     ctn2= $('#share_solution_link');
                     ctn2.empty();
-                    ctn2.append(`<a href="whatsapp://send?text=Get ${target} with ${numbersString}? My solution: ${currentNumber.expression} \u1f604 http://www.makeanumber.com?${encodeURIComponent(gameId)}" data-action="share/whatsapp/share">Share solution</a>`);
+                    ctn2.append(`<a href="whatsapp://send?text=Get ${target} with ${numbersString}? My solution: ${currentNumber.expression}. http://www.makeanumber.com?${encodeURIComponent(gameId)}" data-action="share/whatsapp/share">Share solution</a>`);
                     $('#winModal').modal('show');
                 }
             }
